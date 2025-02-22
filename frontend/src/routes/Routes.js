@@ -1,29 +1,14 @@
-// import { useAuthContext } from "../context/AuthContext";
-import Home from "../pages/home/Home";
-import Login from "../pages/login/Login";
-import NewsFeed from "../pages/newsfeed/NewsFeed";
-import NewsDetail from "../pages/newsfeed/NewsDetail";
-import Profile from "../pages/profile/Profile";
-import Signup from "../pages/signup/Signup";
-import Update from "../pages/update/Update";
-import Upload from "../pages/upload/Upload";
-import Certificate from "../pages/certificate/Certificate";
-import NewsPending from "../pages/newsfeed/NewsPending";
-import CertificatePending from "../pages/certificate/CertificatePending";
+import LayoutIcon from "../layouts/LayoutIcon";
+import Explore from "../pages/Explore";
+import Home from "../pages/Home";
+import Messages from "../pages/Messages";
+import Reels from "../pages/Reels";
 
-// const { authUser } = useAuthContext();
 const publicRoutes = [
     { path: "/", component: Home },
-    { path: "/login", component: Login },
-    { path: "/signup", component: Signup },
-    { path: "/upload", component: Upload },
-    { path: "/profile/:id", component: Profile },
-    { path: "/newsfeed", component: NewsFeed },
-    { path: "/newsfeed/pending", component: NewsPending },
-    { path: "/newsfeed/:id", component: NewsDetail },
-    { path: "/update/:id", component: Update },
-    { path: "/certificate", component: Certificate },
-    { path: "/certificate/pending", component: CertificatePending },
+    { path: "/explore", component: Explore },
+    { path: "/reels", component: Reels },
+    { path: "/messages", component: Messages, layout: LayoutIcon },
 ];
 
 const privateRoute = [];
