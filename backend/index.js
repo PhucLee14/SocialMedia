@@ -1,7 +1,9 @@
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
+import cookieParser from "cookie-parser";
 import authRoute from "./src/routes/auth.route.js";
+import userRoute from "./src/routes/user.route.js";
 import connectToMongoDb from "./src/config/connectToMongoDB.js";
 const app = express();
 dotenv.config();
@@ -16,12 +18,14 @@ app.use(
         credentials: true,
     })
 );
+app.use(cookieParser());
 
 app.get("/", (req, res) => {
     res.send("Hello World");
 });
 
 app.use("/api/auth", authRoute);
+app.use("/api/user", userRoute);
 
 app.listen(PORT, () => {
     connectToMongoDb();

@@ -29,8 +29,10 @@ function Login() {
             const data = await login(state);
             console.log("data: ", data);
             if (data.status === 400) {
+                toast.error(data.data.error);
                 throw new Error(data.data.error);
             }
+            nav("/");
             localStorage.setItem("user", JSON.stringify(data));
         } catch (error) {}
     };
@@ -38,6 +40,7 @@ function Login() {
         <div className="flex flex-col justify-center items-center h-screen">
             <div className="flex flex-col items-center w-96 border border-gray-300 p-12">
                 <p className="mb-12">Web Name</p>
+                {/* <form action="" onSubmit={handleSubmit}> */}
                 <InputAuth
                     type="text"
                     placeholder="Phone number, username or email"
@@ -64,6 +67,7 @@ function Login() {
                 >
                     Log in
                 </button>
+                {/* </form> */}
                 <p className="my-4">OR</p>
                 <button className="text-blue-500 w-full font-semibold rounded-lg cursor-pointer">
                     Login with Facebook
