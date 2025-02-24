@@ -2,7 +2,7 @@ import { Route, Routes } from "react-router-dom";
 import "./App.css";
 import DefaultLayout from "./layouts/DefaultLayout";
 import { publicRoutes } from "./routes/Routes";
-import Home from "./pages/Home";
+import { Fragment } from "react";
 
 function App() {
     return (
@@ -14,7 +14,7 @@ function App() {
                     if (route.layout) {
                         Layout = route.layout;
                     } else if (route.layout === null) {
-                        Layout = DefaultLayout;
+                        Layout = Fragment;
                     }
                     return (
                         <Route
