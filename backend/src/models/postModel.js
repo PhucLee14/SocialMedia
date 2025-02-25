@@ -1,6 +1,10 @@
 import mongoose, { Schema } from "mongoose";
 
 const postModel = Schema({
+    author: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+    },
     content: {
         type: String,
     },
@@ -41,3 +45,5 @@ const postModel = Schema({
 });
 
 const Post = mongoose.model("Post", postModel);
+
+export default Post;

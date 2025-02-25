@@ -37,7 +37,7 @@ function DefaultLayout({ children }) {
 
     return (
         <div className="flex">
-            <div className="flex flex-col h-screen border-gray-300 w-64 border-r justify-between">
+            <div className="flex flex-col h-screen border-gray-300 w-64 border-r justify-between z-10">
                 <div className="flex flex-col">
                     <div className="w-64 py-6 flex justify-centerr h-24">
                         <Link to="/" className="w-11/12 block px-2">
@@ -92,7 +92,7 @@ function DefaultLayout({ children }) {
                         <PageLink
                             img={user.profilePicture}
                             title="Profile"
-                            link="/"
+                            link={`/${user.userName}`}
                             width="w-58"
                         />
                     ) : (
