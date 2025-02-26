@@ -4,11 +4,13 @@ import PageLink from "../components/PageLink";
 import SearchPopup from "../components/Popup/SearchPopup";
 import { getUser } from "../services/userService";
 import { logout } from "../services/authService";
+import CreatePostModal from "../components/CreatePostModal";
 
 function DefaultLayout({ children }) {
     const nav = useNavigate();
     const [display, setDisplay] = useState(false);
     const [user, setUser] = useState(null);
+    const [createModal, setCreateModal] = useState(false);
 
     useEffect(() => {
         const fetchUser = async () => {
@@ -87,6 +89,7 @@ function DefaultLayout({ children }) {
                         icon={<i className="fa-regular fa-square-plus"></i>}
                         title="Create"
                         width="w-58"
+                        onClick={() => setCreateModal(true)}
                     />
                     {user ? (
                         <PageLink
@@ -122,6 +125,11 @@ function DefaultLayout({ children }) {
             </div>
             <div>{display ? <SearchPopup /> : ""}</div>
             <div>{children}</div>
+            {createModal ? (
+                <CreatePostModal onClick={() => setCreateModal(false)} />
+            ) : (
+                ""
+            )}
         </div>
     );
 }
