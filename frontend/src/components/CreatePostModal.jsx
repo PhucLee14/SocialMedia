@@ -1,25 +1,88 @@
 import React from "react";
+import { Box, Typography, Button } from "@mui/material";
+import ImageOutlinedIcon from "@mui/icons-material/ImageOutlined";
 
 function CreatePostModal({ onClick }) {
     return (
-        <div className="flex items-center justify-center w-screen h-screen absolute top-0 left-0">
-            <div
-                className=" z-[100] h-screen w-screen bg-black opacity-60 absolute top-0 left-0"
+        <Box
+            sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                width: "100vw",
+                height: "100vh",
+                position: "absolute",
+                top: 0,
+                left: 0,
+            }}
+        >
+            <Box
+                sx={{
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    width: "100%",
+                    height: "100%",
+                    backgroundColor: "rgba(0, 0, 0, 0.6)",
+                    zIndex: 100,
+                }}
                 onClick={onClick}
-            ></div>
-            <div className="flex flex-col items-center z-[101] bg-white w-[600px] h-4/5 rounded-xl">
-                <div className="border-b border-gray-300 w-full text-center py-2 font-semibold">
+            ></Box>
+
+            <Box
+                sx={{
+                    backgroundColor: "white",
+                    width: 600,
+                    height: "80vh",
+                    borderRadius: 3,
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    zIndex: 101,
+                }}
+            >
+                <Box
+                    sx={{
+                        width: "100%",
+                        textAlign: "center",
+                        py: 2,
+                        fontWeight: "bold",
+                        borderBottom: "1px solid gray",
+                    }}
+                >
                     Create new post
-                </div>
-                <div className="flex flex-col items-center justify-center w-full h-full">
-                    <i class="fa-solid fa-images text-6xl"></i>
-                    <p className="text-xl my-4">Drag photos and videos here</p>
-                    <button className="py-1 px-3 bg-blue-500 text-white rounded-lg cursor-pointer hover:bg-blue-600">
+                </Box>
+
+                <Box
+                    sx={{
+                        flexGrow: 1,
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        width: "100%",
+                    }}
+                >
+                    <ImageOutlinedIcon sx={{ fontSize: 80, color: "gray" }} />
+                    <Typography variant="h6" sx={{ my: 2 }}>
+                        Drag photos and videos here
+                    </Typography>
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        sx={{
+                            px: 3,
+                            py: 1,
+                            textTransform: "none",
+                            borderRadius: 2,
+                            backgroundColor: "#2196f3",
+                        }}
+                    >
                         Select from computer
-                    </button>
-                </div>
-            </div>
-        </div>
+                    </Button>
+                </Box>
+            </Box>
+        </Box>
     );
 }
 

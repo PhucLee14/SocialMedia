@@ -5,6 +5,13 @@ import { privateRoutes, publicRoutes } from "./routes/Routes";
 import { Fragment } from "react";
 import PrivateRoute from "./utils/PrivateRoute";
 import { Toaster } from "react-hot-toast";
+import {
+    getStorage,
+    ref,
+    uploadBytesResumable,
+    getDownloadURL,
+    uploadBytes,
+} from "firebase/storage";
 
 function App() {
     return (
@@ -53,7 +60,6 @@ function App() {
                     );
                 })}
             </Routes>
-
             <Toaster position="top-right" reverseOrder={false} />
         </>
     );

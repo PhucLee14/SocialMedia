@@ -1,12 +1,27 @@
+import { Input } from "@mui/material";
 import React from "react";
 
 function InputAuth({ type, placeholder, onChange }) {
     return (
-        <input
+        <Input
             type={type}
             placeholder={placeholder}
-            className="py-2 px-1 w-full border-gray-400 bg-slate-50 mb-2 text-xs"
             onChange={onChange}
+            disableUnderline
+            sx={{
+                py: 1,
+                px: 1.5,
+                width: "100%",
+                border: "1px solid #dbdbdb",
+                borderRadius: "4px",
+                backgroundColor: "#ffffff",
+                fontSize: "0.875rem",
+                marginBottom: 1.5,
+                "& .MuiInputBase-input": {
+                    py: 0.8,
+                    backgroundColor: "transparent",
+                },
+            }}
         />
     );
 }

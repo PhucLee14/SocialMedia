@@ -1,5 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import {
+    Box,
+    ClickAwayListener,
+    IconButton,
+    Menu,
+    MenuItem,
+    TextField,
+    Paper,
+    Typography,
+    Divider,
+} from "@mui/material";
 import PageLink from "../components/PageLink";
 import SearchPopup from "../components/Popup/SearchPopup";
 import { getUser } from "../services/userService";
@@ -11,12 +22,14 @@ function DefaultLayout({ children }) {
     const [display, setDisplay] = useState(false);
     const [user, setUser] = useState(null);
     const [createModal, setCreateModal] = useState(false);
+    const [menuAnchor, setMenuAnchor] = useState(null);
+    const [openSearch, setOpenSearch] = useState(false);
+    const [navWidth, setNavWidth] = useState(250);
 
     useEffect(() => {
         const fetchUser = async () => {
             try {
                 const data = await getUser();
-                console.log(data);
                 setUser(data);
             } catch (error) {
                 console.error("Failed to fetch user:", error);
@@ -37,100 +50,132 @@ function DefaultLayout({ children }) {
         }
     };
 
+    const handleSearch = () => {
+        setDisplay(!display);
+    };
+
+    const handleMenuOpen = (event) => {
+        setMenuAnchor(event.currentTarget);
+    };
+
+    const handleMenuClose = () => {
+        setMenuAnchor(null);
+    };
+
+    const handleSearchOpen = () => {
+        setNavWidth(72);
+        setOpenSearch(true);
+    };
+    const handleSearchClose = () => {
+        setNavWidth(250);
+        setOpenSearch(false);
+    };
+
     return (
-        <div className="flex">
-            <div className="flex flex-col h-screen border-gray-300 w-64 border-r justify-between z-10">
-                <div className="flex flex-col">
-                    <div className="w-64 py-6 flex justify-centerr h-24">
-                        <Link to="/" className="w-11/12 block px-2">
+        <Box display="flex">
+            <Box
+                display="flex"
+                flexDirection="column"
+                height="100vh"
+                width={navWidth}
+                borderRight="1px solid #ddd"
+                justifyContent="space-between"
+                zIndex={10}
+                // p={2}
+            >
+                <Box>
+                    <Box py={3} textAlign="center">
+                        <Link
+                            to="/"
+                            style={{
+                                textDecoration: "none",
+                                fontSize: 24,
+                                fontWeight: "bold",
+                            }}
+                        >
                             Logo
                         </Link>
-                    </div>
+                    </Box>
+
                     <PageLink
                         icon={<i className="fa-regular fa-house"></i>}
-                        title="Home"
+                        title={navWidth === 250 ? "Home" : ""}
                         link="/"
-                        width="w-58"
                     />
+
                     <PageLink
                         icon={
                             <i className="fa-regular fa-magnifying-glass"></i>
                         }
-                        title="Search"
-                        width="w-58"
-                        onClick={() => setDisplay(!display)}
+                        title={navWidth === 250 ? "Search" : ""}
+                        onClick={handleSearchOpen}
                     />
                     <PageLink
                         icon={<i className="fa-regular fa-compass"></i>}
-                        title="Explore"
+                        title={navWidth === 250 ? "Explore" : ""}
                         link="/explore"
-                        width="w-58"
                     />
                     <PageLink
                         icon={
                             <i className="fa-regular fa-clapperboard-play"></i>
                         }
-                        title="Reels"
+                        title={navWidth === 250 ? "Reels" : ""}
                         link="/reels"
-                        width="w-58"
                     />
                     <PageLink
                         icon={<i className="fa-regular fa-paper-plane"></i>}
-                        title="Messages"
+                        title={navWidth === 250 ? "Messages" : ""}
                         link="/messages"
-                        width="w-58"
                     />
                     <PageLink
                         icon={<i className="fa-regular fa-heart"></i>}
-                        title="Notifications"
-                        width="w-58"
+                        title={navWidth === 250 ? "Notifications" : ""}
                     />
                     <PageLink
                         icon={<i className="fa-regular fa-square-plus"></i>}
-                        title="Create"
-                        width="w-58"
+                        title={navWidth === 250 ? "Create" : ""}
                         onClick={() => setCreateModal(true)}
                     />
-                    {user ? (
+
+                    {user && (
                         <PageLink
                             img={user.profilePicture}
-                            title="Profile"
+                            title={navWidth === 250 ? "Profile" : ""}
                             link={`/${user.userName}`}
-                            width="w-58"
                         />
-                    ) : (
-                        ""
                     )}
-                </div>
-                <div className="justify-end items-center flex flex-col">
-                    <div className="dropdown dropdown-top">
-                        <PageLink
-                            icon={<i class="fa-regular fa-bars"></i>}
-                            title="More"
-                            width="w-58"
-                        />
-                        <ul
-                            tabIndex={0}
-                            className="dropdown-content menu bg-base-100 rounded-box z-[1] w-52 p-2 shadow"
-                        >
-                            <li>
-                                <a>Item 1</a>
-                            </li>
-                            <li onClick={() => handleLogout()}>
-                                <a>Log out</a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-            <div>{display ? <SearchPopup /> : ""}</div>
-            <div>{children}</div>
-            {createModal ? (
+                </Box>
+
+                <Box display="flex" justifyContent="center">
+                    <IconButton onClick={handleMenuOpen}>
+                        <i className="fa-regular fa-bars"></i>
+                    </IconButton>
+                    <Menu
+                        anchorEl={menuAnchor}
+                        open={Boolean(menuAnchor)}
+                        onClose={handleMenuClose}
+                    >
+                        <MenuItem>Item 1</MenuItem>
+                        <MenuItem onClick={handleLogout}>Log out</MenuItem>
+                    </Menu>
+                </Box>
+            </Box>
+
+            <Box flex={1}>
+                {openSearch && (
+                    <ClickAwayListener onClickAway={handleSearchClose}>
+                        <div>
+                            <SearchPopup />
+                        </div>
+                    </ClickAwayListener>
+                )}
+                {children}
+            </Box>
+
+            {createModal && (
                 <CreatePostModal onClick={() => setCreateModal(false)} />
-            ) : (
-                ""
             )}
-        </div>
+        </Box>
     );
 }
 

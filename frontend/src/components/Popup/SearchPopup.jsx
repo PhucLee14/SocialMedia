@@ -1,19 +1,45 @@
 import React from "react";
+import { Box, Paper, TextField, Typography, Divider } from "@mui/material";
 
 function SearchPopup() {
     return (
-        <div
-            className={`h-screen bg-white z-40 absolute top-0 min-w-96 drop-shadow-[8px_0_8px_rgba(0,0,0,0.1)] rounded-2xl animate-fade-right animate-duration-400 animate-ease-in-out`}
+        <Paper
+            elevation={4}
+            sx={{
+                position: "absolute",
+                top: 0,
+                minWidth: 350,
+                height: "100vh",
+                zIndex: 40,
+                borderRadius: 2,
+                boxShadow: "8px 0 8px rgba(0,0,0,0.1)",
+                animation: "fade-right 0.4s ease-in-out",
+            }}
         >
-            <div className="px-4">
-                <p className="py-6 text-2xl font-bold">Search</p>
-                <input
-                    type="text"
-                    className="border-none w-full bg-gray-200 rounded-xl px-4 py-2 my-6 focus:outline-none"
+            <Box px={4}>
+                <Typography variant="h5" fontWeight="bold" py={3}>
+                    Search
+                </Typography>
+                <TextField
+                    fullWidth
+                    placeholder="Search..."
+                    variant="outlined"
+                    sx={{
+                        backgroundColor: "#f0f0f0",
+                        borderRadius: 2,
+                        my: 2,
+                        "& fieldset": { border: "none" },
+                        "& .MuiInputBase-input": {
+                            py: 1,
+                        },
+                        "&:focus-within .MuiOutlinedInput-notchedOutline": {
+                            border: "none",
+                        },
+                    }}
                 />
-            </div>
-            <div className="border border-gray-200"></div>
-        </div>
+            </Box>
+            <Divider />
+        </Paper>
     );
 }
 
