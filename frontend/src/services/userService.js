@@ -7,3 +7,7 @@ export const getUser = () => {
 export const getUserByUserName = (userName) => {
     return api.get(`/api/user/u/${userName}`);
 };
+
+export const getUserById = (id) => {
+    return api.get(`/api/user/${id}`);
+};

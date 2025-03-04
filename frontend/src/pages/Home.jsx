@@ -3,9 +3,28 @@ import SeachPopup from "../components/Popup/SearchPopup";
 import { Box } from "@mui/material";
 import { getUser } from "../services/userService";
 import { Link } from "react-router-dom";
+import { getPosts } from "../services/postService";
+import Post from "../components/Post";
 
 function Home() {
     const [user, setUser] = useState(null);
+    const [posts, setPosts] = useState(null);
+
+    //Get post
+    useEffect(() => {
+        const fetchPost = async () => {
+            try {
+                const data = await getPosts();
+                setPosts(data);
+            } catch (error) {
+                console.error("Failed to fetch post:", error);
+            }
+        };
+
+        fetchPost();
+    }, []);
+
+    //Get user
     useEffect(() => {
         const fetchUser = async () => {
             try {
@@ -19,9 +38,20 @@ function Home() {
         fetchUser();
     }, []);
     console.log(user);
+    console.log(posts);
     return user ? (
-        <Box sx={{ display: "flex", justifyContent: "center" }}>
-            <Box sx={{ width: 630, backgroundColor: "yellow" }}>Newfeeds</Box>
+        <Box
+            sx={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "start",
+            }}
+        >
+            <Box sx={{ width: 630 }}>
+                {posts
+                    ? posts.map((post) => <Post key={post._id} id={post._id} />)
+                    : ""}
+            </Box>
             <Box
                 sx={{
                     width: 320,
@@ -30,6 +60,8 @@ function Home() {
                     display: "flex",
                     justifyContent: "space-between",
                     alignItems: "center",
+                    position: "relative",
+                    top: "0",
                 }}
             >
                 <Box sx={{ display: "flex", justifyContent: "start" }}>
@@ -41,6 +73,7 @@ function Home() {
                                 width: 45,
                                 height: 45,
                                 marginRight: "12px",
+                                borderRadius: "50%",
                             }}
                         />
                     </Link>

@@ -73,102 +73,112 @@ function DefaultLayout({ children }) {
 
     return (
         <Box display="flex">
-            <Box
-                display="flex"
-                flexDirection="column"
-                height="100vh"
-                width={navWidth}
-                borderRight="1px solid #ddd"
-                justifyContent="space-between"
-                zIndex={10}
-                // p={2}
-            >
-                <Box>
-                    <Box py={3} textAlign="center">
-                        <Link
-                            to="/"
-                            style={{
-                                textDecoration: "none",
-                                fontSize: 24,
-                                fontWeight: "bold",
-                            }}
-                        >
-                            Logo
-                        </Link>
+            <Box width={250} display="flex" position={"fixed"}>
+                <Box
+                    display="flex"
+                    flexDirection="column"
+                    height="100vh"
+                    width={navWidth}
+                    borderRight="1px solid #ddd"
+                    justifyContent="space-between"
+                    zIndex={10}
+                    style={{
+                        width: navWidth,
+                        transition: " width .3s",
+                    }}
+                >
+                    <Box>
+                        <Box py={3} textAlign="center">
+                            <Link
+                                to="/"
+                                style={{
+                                    textDecoration: "none",
+                                    fontSize: 24,
+                                    fontWeight: "bold",
+                                }}
+                            >
+                                {navWidth === 250 ? (
+                                    "Instagram"
+                                ) : (
+                                    <i class="fa-brands fa-instagram"></i>
+                                )}
+                            </Link>
+                        </Box>
+
+                        <PageLink
+                            icon={<i className="fa-regular fa-house"></i>}
+                            title={navWidth === 250 ? "Home" : ""}
+                            link="/"
+                        />
+
+                        <PageLink
+                            icon={
+                                <i className="fa-regular fa-magnifying-glass"></i>
+                            }
+                            title={navWidth === 250 ? "Search" : ""}
+                            onClick={handleSearchOpen}
+                        />
+                        <PageLink
+                            icon={<i className="fa-regular fa-compass"></i>}
+                            title={navWidth === 250 ? "Explore" : ""}
+                            link="/explore"
+                        />
+                        <PageLink
+                            icon={
+                                <i className="fa-regular fa-clapperboard-play"></i>
+                            }
+                            title={navWidth === 250 ? "Reels" : ""}
+                            link="/reels"
+                        />
+                        <PageLink
+                            icon={<i className="fa-regular fa-paper-plane"></i>}
+                            title={navWidth === 250 ? "Messages" : ""}
+                            link="/messages"
+                        />
+                        <PageLink
+                            icon={<i className="fa-regular fa-heart"></i>}
+                            title={navWidth === 250 ? "Notifications" : ""}
+                        />
+                        <PageLink
+                            icon={<i className="fa-regular fa-square-plus"></i>}
+                            title={navWidth === 250 ? "Create" : ""}
+                            onClick={() => setCreateModal(true)}
+                        />
+
+                        {user && (
+                            <PageLink
+                                img={user.profilePicture}
+                                title={navWidth === 250 ? "Profile" : ""}
+                                link={`/${user.userName}`}
+                            />
+                        )}
                     </Box>
 
-                    <PageLink
-                        icon={<i className="fa-regular fa-house"></i>}
-                        title={navWidth === 250 ? "Home" : ""}
-                        link="/"
-                    />
-
-                    <PageLink
-                        icon={
-                            <i className="fa-regular fa-magnifying-glass"></i>
-                        }
-                        title={navWidth === 250 ? "Search" : ""}
-                        onClick={handleSearchOpen}
-                    />
-                    <PageLink
-                        icon={<i className="fa-regular fa-compass"></i>}
-                        title={navWidth === 250 ? "Explore" : ""}
-                        link="/explore"
-                    />
-                    <PageLink
-                        icon={
-                            <i className="fa-regular fa-clapperboard-play"></i>
-                        }
-                        title={navWidth === 250 ? "Reels" : ""}
-                        link="/reels"
-                    />
-                    <PageLink
-                        icon={<i className="fa-regular fa-paper-plane"></i>}
-                        title={navWidth === 250 ? "Messages" : ""}
-                        link="/messages"
-                    />
-                    <PageLink
-                        icon={<i className="fa-regular fa-heart"></i>}
-                        title={navWidth === 250 ? "Notifications" : ""}
-                    />
-                    <PageLink
-                        icon={<i className="fa-regular fa-square-plus"></i>}
-                        title={navWidth === 250 ? "Create" : ""}
-                        onClick={() => setCreateModal(true)}
-                    />
-
-                    {user && (
-                        <PageLink
-                            img={user.profilePicture}
-                            title={navWidth === 250 ? "Profile" : ""}
-                            link={`/${user.userName}`}
-                        />
-                    )}
+                    <Box display="flex" justifyContent="center">
+                        <IconButton onClick={handleMenuOpen}>
+                            <i className="fa-regular fa-bars"></i>
+                        </IconButton>
+                        <Menu
+                            anchorEl={menuAnchor}
+                            open={Boolean(menuAnchor)}
+                            onClose={handleMenuClose}
+                        >
+                            <MenuItem>Item 1</MenuItem>
+                            <MenuItem onClick={handleLogout}>Log out</MenuItem>
+                        </Menu>
+                    </Box>
                 </Box>
 
-                <Box display="flex" justifyContent="center">
-                    <IconButton onClick={handleMenuOpen}>
-                        <i className="fa-regular fa-bars"></i>
-                    </IconButton>
-                    <Menu
-                        anchorEl={menuAnchor}
-                        open={Boolean(menuAnchor)}
-                        onClose={handleMenuClose}
-                    >
-                        <MenuItem>Item 1</MenuItem>
-                        <MenuItem onClick={handleLogout}>Log out</MenuItem>
-                    </Menu>
-                </Box>
-            </Box>
-
-            <Box flex={1}>
                 {openSearch && (
                     <ClickAwayListener onClickAway={handleSearchClose}>
                         <div>
-                            <SearchPopup />
+                            <SearchPopup />{" "}
                         </div>
                     </ClickAwayListener>
                 )}
+            </Box>
+
+            <Box flex={1} marginLeft="250px">
                 {children}
             </Box>
 
