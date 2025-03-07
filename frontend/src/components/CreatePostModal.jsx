@@ -223,9 +223,24 @@ function CreatePostModal({ onClick }) {
                             py: 2,
                             fontWeight: "bold",
                             borderBottom: "1px solid #ccc",
+                            display: "flex",
+                            justifyContent: "space-between",
+                            alignItems: "center",
                         }}
                     >
-                        Create new post
+                        <p></p>
+                        <p style={{ marginLeft: "30px" }}>Create new post</p>
+                        <p
+                            style={{
+                                marginRight: "10px",
+                                fontSize: "12px",
+                                fontWeight: "500",
+                                color: "#0095f6",
+                                cursor: "pointer",
+                            }}
+                        >
+                            Share
+                        </p>
                     </Box>
                     <Box
                         sx={{
