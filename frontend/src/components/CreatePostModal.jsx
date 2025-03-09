@@ -1,6 +1,7 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useReducer, useRef, useState } from "react";
 import { Box, Typography, Button, TextField, Switch } from "@mui/material";
 import ImageOutlinedIcon from "@mui/icons-material/ImageOutlined";
+import { storage } from "../firebase";
 import {
     getStorage,
     ref,
@@ -9,6 +10,32 @@ import {
     uploadBytes,
 } from "firebase/storage";
 import { getUser } from "../services/userService";
+
+const postReducer = (state, action) => {
+    switch (action.type) {
+        case "SET_AUTHOR":
+            return { ...state, author: action.payload };
+        case "SET_CONTENT":
+            return { ...state, content: action.payload };
+        case "SET_MEDIAS":
+            return { ...state, medias: action.payload };
+        case "SET_IS_HIDE_LIKE_AND_VIEW_COUNT":
+            return { ...state, isHideLikeAndViewCount: action.payload };
+        case "SET_ALLOW_COMMENT":
+            return { ...state, allowComment: action.payload };
+        default:
+            return state;
+    }
+};
+
+const initialState = {
+    author: "",
+    content: "",
+    medias: [],
+    isHideLikeAndViewCount: false,
+    allowComment: true,
+};
+
 function CreatePostModal({ onClick }) {
     const inputRef = useRef(null);
     const [image, setImage] = useState([]);
@@ -16,6 +43,7 @@ function CreatePostModal({ onClick }) {
     const [user, setUser] = useState(null);
     const [isAccessibility, setIsAccessibility] = useState(false);
     const [isAdvancedSettings, setIsAdvancedSettings] = useState(false);
+    const [state, dispatch] = useReducer(postReducer, initialState);
 
     useEffect(() => {
         const fetchUser = async () => {
@@ -29,10 +57,6 @@ function CreatePostModal({ onClick }) {
 
         fetchUser();
     }, []);
-
-    const selectFiles = (e) => {
-        inputRef.current.click();
-    };
 
     const onDragOver = (e) => {
         e.preventDefault();
@@ -97,6 +121,35 @@ function CreatePostModal({ onClick }) {
             }
         }
     };
+
+    const selectFiles = (e) => {
+        inputRef.current.click();
+    };
+
+    const handleSubmit = async () => {
+        console.log(imagesObj);
+        if (imagesObj) {
+            for (let i = 0; i < imagesObj.length; i++) {
+                const imageRef = ref(storage, `/images/${imagesObj[i].name}`);
+                try {
+                    await uploadBytes(imageRef, imagesObj[i]);
+
+                    const temp = await getDownloadURL(imageRef);
+
+                    dispatch({
+                        type: "SET_MEDIAS",
+                        payload: state.medias.push(temp),
+                    });
+
+                    console.log("Upload success:", temp);
+                } catch (error) {
+                    console.error("Upload error:", error);
+                }
+            }
+        }
+        console.log(state);
+    };
+
     return (
         <Box
             sx={{
@@ -238,6 +291,7 @@ function CreatePostModal({ onClick }) {
                                 color: "#0095f6",
                                 cursor: "pointer",
                             }}
+                            onClick={handleSubmit}
                         >
                             Share
                         </p>
@@ -323,6 +377,12 @@ function CreatePostModal({ onClick }) {
                                         height: "168px",
                                     }}
                                     maxLength={2200}
+                                    onChange={(e) =>
+                                        dispatch({
+                                            type: "SET_CONTENT",
+                                            payload: e.target.value,
+                                        })
+                                    }
                                 />
                                 <Box
                                     sx={{
@@ -470,7 +530,15 @@ function CreatePostModal({ onClick }) {
                                                 Hide like and view counts on
                                                 this post
                                             </p>
-                                            <Switch />
+                                            <Switch
+                                                onChange={(e) => {
+                                                    dispatch({
+                                                        type: "SET_IS_HIDE_LIKE_AND_VIEW_COUNT",
+                                                        payload:
+                                                            !state.isHideLikeAndViewCount,
+                                                    });
+                                                }}
+                                            />
                                         </Box>
                                         <p
                                             style={{
@@ -506,7 +574,15 @@ function CreatePostModal({ onClick }) {
                                             }}
                                         >
                                             <p>Turn off commenting</p>
-                                            <Switch />
+                                            <Switch
+                                                onChange={(e) => {
+                                                    dispatch({
+                                                        type: "SET_ALLOW_COMMENT",
+                                                        payload:
+                                                            !state.allowComment,
+                                                    });
+                                                }}
+                                            />
                                         </Box>
                                         <p
                                             style={{
