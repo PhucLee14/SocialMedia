@@ -3,10 +3,12 @@ import mongoose, { Schema } from "mongoose";
 const postModel = Schema({
     author: {
         type: mongoose.Schema.Types.ObjectId,
+        required: true,
         ref: "User",
     },
     content: {
         type: String,
+        required: true,
     },
     medias: [
         {

@@ -10,6 +10,7 @@ import {
     uploadBytes,
 } from "firebase/storage";
 import { getUser } from "../services/userService";
+import { createPost } from "../services/postService";
 
 const postReducer = (state, action) => {
     switch (action.type) {
@@ -20,7 +21,7 @@ const postReducer = (state, action) => {
         case "SET_MEDIAS":
             return { ...state, medias: action.payload };
         case "SET_IS_HIDE_LIKE_AND_VIEW_COUNT":
-            return { ...state, isHideLikeAndViewCount: action.payload };
+            return { ...state, hideLikeAndComment: action.payload };
         case "SET_ALLOW_COMMENT":
             return { ...state, allowComment: action.payload };
         default:
@@ -32,7 +33,8 @@ const initialState = {
     author: "",
     content: "",
     medias: [],
-    isHideLikeAndViewCount: false,
+    tag: [],
+    hideLikeAndComment: false,
     allowComment: true,
 };
 
@@ -50,6 +52,10 @@ function CreatePostModal({ onClick }) {
             try {
                 const data = await getUser();
                 setUser(data);
+                dispatch({
+                    type: "SET_AUTHOR",
+                    payload: data._id,
+                });
             } catch (error) {
                 console.error("Failed to fetch user:", error);
             }
@@ -57,6 +63,8 @@ function CreatePostModal({ onClick }) {
 
         fetchUser();
     }, []);
+
+    console.log(user);
 
     const onDragOver = (e) => {
         e.preventDefault();
@@ -127,27 +135,40 @@ function CreatePostModal({ onClick }) {
     };
 
     const handleSubmit = async () => {
-        console.log(imagesObj);
-        if (imagesObj) {
-            for (let i = 0; i < imagesObj.length; i++) {
-                const imageRef = ref(storage, `/images/${imagesObj[i].name}`);
-                try {
-                    await uploadBytes(imageRef, imagesObj[i]);
+        console.log(state);
+        try {
+            if (imagesObj) {
+                for (let i = 0; i < imagesObj.length; i++) {
+                    const imageRef = ref(
+                        storage,
+                        `/images/${imagesObj[i].name}`
+                    );
+                    try {
+                        await uploadBytes(imageRef, imagesObj[i]);
 
-                    const temp = await getDownloadURL(imageRef);
+                        const temp = await getDownloadURL(imageRef);
 
-                    dispatch({
-                        type: "SET_MEDIAS",
-                        payload: state.medias.push(temp),
-                    });
+                        dispatch({
+                            type: "SET_MEDIAS",
+                            payload: state.medias.push(temp),
+                        });
 
-                    console.log("Upload success:", temp);
-                } catch (error) {
-                    console.error("Upload error:", error);
+                        console.log("Upload success:", temp);
+                    } catch (error) {
+                        console.error("Upload error:", error);
+                    }
                 }
             }
+            console.log(state);
+            const data = await createPost(state);
+            if (data.status === 400) {
+                throw new Error(data.data.error);
+            }
+            console.log("data: ", data);
+            location.reload();
+        } catch (error) {
+            console.log(error);
         }
-        console.log(state);
     };
 
     return (
@@ -535,7 +556,7 @@ function CreatePostModal({ onClick }) {
                                                     dispatch({
                                                         type: "SET_IS_HIDE_LIKE_AND_VIEW_COUNT",
                                                         payload:
-                                                            !state.isHideLikeAndViewCount,
+                                                            !state.hideLikeAndComment,
                                                     });
                                                 }}
                                             />
