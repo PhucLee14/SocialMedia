@@ -146,21 +146,33 @@ function Post({ id }) {
                     mt: "12px",
                 }}
             >
-                {!post.content ? (
+                {post.content ? (
                     <Box sx={{ display: "flex", gap: "8px" }}>
                         <Link to={`/${user.userName}`}>
                             <Box sx={{ fontWeight: 600 }}>{user.userName}</Box>
                         </Link>
-                        <Box>{post.content}aaaa</Box>
+                        <Box>{post.content}</Box>
                     </Box>
                 ) : (
                     ""
                 )}
             </Box>
-            <Box sx={{ width: "468px", mt: "12px" }}>
+            <Box
+                sx={{
+                    width: "468px",
+                    mt: "12px",
+                    borderBottom: "1px solid #999",
+                    pb: "24px",
+                }}
+            >
                 <Input
                     placeholder="Add a comment"
-                    sx={{ border: "none", width: "100%", fontSize: "12px" }}
+                    disableUnderline
+                    sx={{
+                        border: "none",
+                        width: "100%",
+                        fontSize: "12px",
+                    }}
                 ></Input>
             </Box>
         </Box>

@@ -34,7 +34,9 @@ function Login() {
             }
             nav("/");
             localStorage.setItem("user", JSON.stringify(data));
-        } catch (error) {}
+        } catch (error) {
+            console.log(error);
+        }
     };
     return (
         <div className="flex flex-col justify-center items-center h-screen">

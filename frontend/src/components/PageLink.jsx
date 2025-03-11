@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { Button, Box, Typography } from "@mui/material";
 
-function PageLink({ img, icon, title, link, onClick }) {
+function PageLink({ img, icon, title, link, onClick, my, fontSize }) {
     return (
         <Box
             sx={{
@@ -20,11 +20,11 @@ function PageLink({ img, icon, title, link, onClick }) {
                     border: "none",
                     width: "100%",
                     minWidth: 0,
-                    my: 1,
+                    my: my ? my : 1,
                     pl: 1,
                     justifyContent: "flex-start",
                     textTransform: "none",
-                    fontSize: "1rem",
+                    // fontSize: fontSize ? fontSize : "1rem",
                     fontWeight: "medium",
                     display: "flex",
                     alignItems: "center",
@@ -48,7 +48,12 @@ function PageLink({ img, icon, title, link, onClick }) {
                     </Typography>
                 )}
 
-                <Typography variant="body1">{title}</Typography>
+                <Typography
+                    variant="body1"
+                    sx={{ fontSize: fontSize ? fontSize : "1rem" }}
+                >
+                    {title}
+                </Typography>
             </Button>
         </Box>
     );

@@ -31,7 +31,10 @@ function Profile() {
                 <div className="w-full h-36">
                     <div className="flex">
                         <p className="text-xl mr-4">{user.userName}</p>
-                        <Link className="btn rounded-lg bg-gray-100 py-1 h-auto mr-2">
+                        <Link
+                            className="btn rounded-lg bg-gray-100 py-1 h-auto mr-2"
+                            to={`/edit`}
+                        >
                             Edit profile
                         </Link>
                         <Link className="btn rounded-lg bg-gray-100 py-1 h-auto">
