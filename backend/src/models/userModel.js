@@ -25,6 +25,10 @@ const userModel = Schema({
         type: String,
         default: "",
     },
+    bio: {
+        type: String,
+        default: "",
+    },
     following: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
     followers: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
     saves: [{ type: mongoose.Schema.Types.ObjectId, ref: "Post" }],

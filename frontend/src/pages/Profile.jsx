@@ -33,7 +33,7 @@ function Profile() {
                         <p className="text-xl mr-4">{user.userName}</p>
                         <Link
                             className="btn rounded-lg bg-gray-100 py-1 h-auto mr-2"
-                            to={`/edit`}
+                            to={`/account/edit`}
                         >
                             Edit profile
                         </Link>

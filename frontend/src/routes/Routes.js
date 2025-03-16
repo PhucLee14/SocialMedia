@@ -18,7 +18,11 @@ const publicRoutes = [
 
 const privateRoutes = [
     { path: "/", component: Home },
-    { path: "/edit", component: EditProfile, layout: EditProfileLayout },
+    {
+        path: "/account/edit",
+        component: EditProfile,
+        layout: EditProfileLayout,
+    },
     { path: "/explore", component: Explore },
     { path: "/reels", component: Reels },
     { path: "/messages", component: Messages, layout: LayoutIcon },

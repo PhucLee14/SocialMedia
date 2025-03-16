@@ -1,8 +1,11 @@
 import { Box } from "@mui/material";
 import React from "react";
 import PageLink from "../../components/PageLink";
+import { useSelector } from "react-redux";
 
 function EditProfile() {
+    const userId = useSelector((state) => state.user.id);
+    console.log("userId: ", userId);
     return (
         <Box sx={{ display: "flex" }}>
             <Box

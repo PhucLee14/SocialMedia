@@ -3,15 +3,17 @@ import { Link, useNavigate } from "react-router-dom";
 import InputAuth from "../components/InputAuth";
 import { login } from "../services/authService";
 import toast from "react-hot-toast";
+import { useDispatch } from "react-redux";
+import { setUserId } from "../redux/slices/userSlice";
 
-const authReducer = (state, action) => {
+const authReducer = (authState, action) => {
     switch (action.type) {
         case "SET_USERNAME":
-            return { ...state, userName: action.payload };
+            return { ...authState, userName: action.payload };
         case "SET_PASSWORD":
-            return { ...state, password: action.payload };
+            return { ...authState, password: action.payload };
         default:
-            return state;
+            return authState;
     }
 };
 
@@ -21,12 +23,13 @@ const initialState = {
 };
 
 function Login() {
+    const dispatch = useDispatch();
     const nav = useNavigate();
-    const [state, dispatch] = useReducer(authReducer, initialState);
+    const [authState, authDispatch] = useReducer(authReducer, initialState);
     const handleSubmit = async () => {
         try {
-            console.log(state);
-            const data = await login(state);
+            console.log(authState);
+            const data = await login(authState);
             console.log("data: ", data);
             if (data.status === 400) {
                 toast.error(data.data.error);
@@ -34,6 +37,7 @@ function Login() {
             }
             nav("/");
             localStorage.setItem("user", JSON.stringify(data));
+            dispatch(setUserId(data._id));
         } catch (error) {
             console.log(error);
         }
@@ -47,7 +51,7 @@ function Login() {
                     type="text"
                     placeholder="Phone number, username or email"
                     onChange={(e) =>
-                        dispatch({
+                        authDispatch({
                             type: "SET_USERNAME",
                             payload: e.target.value,
                         })
@@ -57,7 +61,7 @@ function Login() {
                     type="password"
                     placeholder="Password"
                     onChange={(e) =>
-                        dispatch({
+                        authDispatch({
                             type: "SET_PASSWORD",
                             payload: e.target.value,
                         })

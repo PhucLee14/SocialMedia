@@ -1,5 +1,6 @@
 import express from "express";
 import {
+    editProfile,
     getUser,
     getUserByID,
     getUserByUsername,
@@ -12,5 +13,7 @@ route.get("/", protect, getUser);
 route.get("/:id", getUserByID);
 
 route.get("/u/:userName", getUserByUsername);
+
+route.patch("/account/edit/:id", editProfile);
 
 export default route;
