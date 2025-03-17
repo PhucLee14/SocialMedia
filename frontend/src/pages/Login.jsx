@@ -4,7 +4,7 @@ import InputAuth from "../components/InputAuth";
 import { login } from "../services/authService";
 import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
-import { setUserId } from "../redux/slices/userSlice";
+import { setUserInfo } from "../redux/slices/userSlice";
 
 const authReducer = (authState, action) => {
     switch (action.type) {
@@ -36,12 +36,17 @@ function Login() {
                 throw new Error(data.data.error);
             }
             nav("/");
+
+            const expiresAt = new Date().getTime() + 30 * 24 * 60 * 60 * 1000;
             localStorage.setItem("user", JSON.stringify(data));
-            dispatch(setUserId(data._id));
+            localStorage.setItem("expiresAt", expiresAt.toString());
+
+            dispatch(setUserInfo(data));
         } catch (error) {
             console.log(error);
         }
     };
+
     return (
         <div className="flex flex-col justify-center items-center h-screen">
             <div className="flex flex-col items-center w-96 border border-gray-300 p-12">

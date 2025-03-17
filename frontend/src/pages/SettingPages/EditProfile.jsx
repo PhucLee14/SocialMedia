@@ -1,270 +1,162 @@
 import { Box } from "@mui/material";
-import React from "react";
-import PageLink from "../../components/PageLink";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import { getUser, getUserByUserName } from "../../services/userService";
+import LoadingProcess from "../../components/Loading/LoadingProcess.jsx";
 
 function EditProfile() {
-    const userId = useSelector((state) => state.user.id);
-    console.log("userId: ", userId);
-    return (
-        <Box sx={{ display: "flex" }}>
+    const userInfo = JSON.parse(localStorage.getItem("user"));
+    const [user, setUser] = useState(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const getUser = async () => {
+            try {
+                const data = await getUserByUserName(userInfo.userName);
+                console.log(data);
+                setUser(data);
+                setLoading(false);
+            } catch (error) {}
+        };
+        getUser();
+    }, []);
+
+    console.log("user: ", userInfo);
+    console.log("userrrrr:", user);
+
+    return loading ? (
+        <LoadingProcess />
+    ) : (
+        <Box
+            sx={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                width: "calc(100% - 330px)",
+            }}
+        >
             <Box
                 sx={{
-                    width: "330px",
-                    borderRight: "1px solid #dbdbdb",
-                    marginTop: "16px",
-                    padding: "16px 0",
-                    height: "100vh",
-                    overflowY: "scroll",
+                    width: "610px",
+                    // display: "flex",
+                    // flexDirection: "column",
+                    // alignItems: "flex-start",
                 }}
             >
                 <p
                     style={{
                         fontSize: "20px",
                         fontWeight: "700",
-                        margin: "0 34px 24px",
-                        padding: "16px",
+                        margin: "34px 0",
+                        padding: "16px 0",
                     }}
                 >
-                    Settings
+                    Edit Profile
                 </p>
                 <Box
                     sx={{
                         display: "flex",
-                        flexDirection: "column",
-                        justifyContent: "center",
-                        margin: "0 22px",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                        backgroundColor: "#efefef",
+                        p: "16px",
+                        borderRadius: "20px",
                     }}
                 >
-                    <p
-                        style={{
+                    <Box sx={{ display: "flex" }}>
+                        <img
+                            src={user.profilePicture}
+                            alt=""
+                            style={{
+                                width: "56px",
+                                height: "56px",
+                                borderRadius: "50%",
+                            }}
+                        />
+                        <Box sx={{ ml: "16px" }}>
+                            <p style={{ fontWeight: "700" }}>{user.userName}</p>
+                            <p style={{ color: "#737373" }}>{user.fullName}</p>
+                        </Box>
+                    </Box>
+                    <Box
+                        sx={{
+                            color: "#fff",
+                            bgcolor: "#0095f6",
+                            fontWeight: "500",
+                            p: "6px 12px",
+                            borderRadius: "10px",
                             fontSize: "14px",
-                            color: "#737373",
-                            fontWeight: "600",
-                            padding: "0 8px",
-                            margin: "12px",
+                            cursor: "pointer",
                         }}
                     >
-                        How you use Instagram
-                    </p>
-                    <Box>
-                        <PageLink
-                            icon={<i class="fa-regular fa-circle-user"></i>}
-                            title="Edit profile"
-                            my="0"
-                            fontSize="14px"
-                        ></PageLink>
-                        <PageLink
-                            icon={<i class="fa-regular fa-bell"></i>}
-                            title="Notifications"
-                            my="0"
-                            fontSize="14px"
-                        ></PageLink>
+                        Change photo
                     </Box>
                 </Box>
-                <Box
-                    sx={{
-                        display: "flex",
-                        flexDirection: "column",
-                        justifyContent: "center",
-                        margin: "0 22px",
-                    }}
-                >
+                <Box>
                     <p
                         style={{
-                            fontSize: "14px",
-                            color: "#737373",
-                            fontWeight: "600",
-                            padding: "0 8px",
-                            margin: "12px",
+                            fontSize: "16px",
+                            fontWeight: "700",
+                            // margin: "34px 0",
+                            padding: "16px 0",
                         }}
                     >
-                        Who can see your content
+                        Website
                     </p>
                     <Box>
-                        <PageLink
-                            icon={<i class="fa-regular fa-lock"></i>}
-                            title="Account privacy"
-                            my="0"
-                            fontSize="14px"
-                        ></PageLink>
-                        <PageLink
-                            icon={<i class="fa-regular fa-circle-star"></i>}
-                            title="Close friends"
-                            my="0"
-                            fontSize="14px"
-                        ></PageLink>
-                        <PageLink
-                            icon={
-                                <i
-                                    class="fa-light fa-circle-half-stroke fa-rotate-by"
-                                    style={{ transform: "rotate(135deg)" }}
-                                ></i>
-                            }
-                            title="Blocked"
-                            my="0"
-                            fontSize="14px"
-                        ></PageLink>
-                        <PageLink
-                            icon={<i class="fa-regular fa-circle-dashed"></i>}
-                            title="Hide story and live"
-                            my="0"
-                            fontSize="14px"
-                        ></PageLink>
+                        <input
+                            type="text"
+                            disabled="true"
+                            style={{
+                                cursor: "no-drop",
+                                width: "100%",
+                                borderRadius: "10px",
+                                padding: "8px 16px",
+                                backgroundColor: "#efefef",
+                                border: "1px solid #ccc",
+                            }}
+                            placeholder="Website"
+                        />
+                    </Box>
+                    <Box
+                        sx={{
+                            fontSize: "12px",
+                            color: "#737373",
+                            padding: "6px 0 12px",
+                        }}
+                    >
+                        Editing your links is only available on mobile. Visit
+                        the Instagram app and edit your profile to change the
+                        websites in your bio.
                     </Box>
                 </Box>
-                <Box
-                    sx={{
-                        display: "flex",
-                        flexDirection: "column",
-                        justifyContent: "center",
-                        margin: "0 22px",
-                    }}
-                >
+                <Box>
                     <p
                         style={{
-                            fontSize: "14px",
-                            color: "#737373",
-                            fontWeight: "600",
-                            padding: "0 8px",
-                            margin: "12px",
+                            fontSize: "16px",
+                            fontWeight: "700",
+                            // margin: "34px 0",
+                            padding: "16px 0",
                         }}
                     >
-                        How others can interact with you
+                        Bio
                     </p>
                     <Box>
-                        <PageLink
-                            icon={
-                                <i class="fa-brands fa-facebook-messenger"></i>
-                            }
-                            title="Messages and story replies"
-                            my="0"
-                            fontSize="14px"
-                        ></PageLink>
-                        <PageLink
-                            icon={<i class="fa-regular fa-at"></i>}
-                            title="Tags and mentions"
-                            my="0"
-                            fontSize="14px"
-                        ></PageLink>
-                        <PageLink
-                            icon={<i class="fa-regular fa-comment"></i>}
-                            title="Comments"
-                            my="0"
-                            fontSize="14px"
-                        ></PageLink>
-                        <PageLink
-                            icon={<i class="fa-solid fa-repeat"></i>}
-                            title="Sharing"
-                            my="0"
-                            fontSize="14px"
-                        ></PageLink>
-                        <PageLink
-                            icon={
-                                <i class="fa-regular fa-user-large-slash"></i>
-                            }
-                            title="Restricted accounts"
-                            my="0"
-                            fontSize="14px"
-                        ></PageLink>
-                        <PageLink
-                            icon={<i class="fa-regular fa-circle-dashed"></i>}
-                            title="Hidden Words"
-                            my="0"
-                            fontSize="14px"
-                        ></PageLink>
-                    </Box>
-                </Box>
-                <Box
-                    sx={{
-                        display: "flex",
-                        flexDirection: "column",
-                        justifyContent: "center",
-                        margin: "0 22px",
-                    }}
-                >
-                    <p
-                        style={{
-                            fontSize: "14px",
-                            color: "#737373",
-                            fontWeight: "600",
-                            padding: "0 8px",
-                            margin: "12px",
-                        }}
-                    >
-                        What you see
-                    </p>
-                    <Box>
-                        <PageLink
-                            icon={<i class="fa-regular fa-bell-slash"></i>}
-                            title="Muted accounts"
-                            my="0"
-                            fontSize="14px"
-                        ></PageLink>
-                        <PageLink
-                            icon={<i class="fa-solid fa-photo-film"></i>}
-                            title="Content preferences"
-                            my="0"
-                            fontSize="14px"
-                        ></PageLink>
-                        <PageLink
-                            icon={
-                                <i class="fa-regular fa-heart-circle-exclamation"></i>
-                            }
-                            title="Like and share counts"
-                            my="0"
-                            fontSize="14px"
-                        ></PageLink>
-                        <PageLink
-                            icon={<i class="fa-regular fa-crown"></i>}
-                            title="Subscriptions"
-                            my="0"
-                            fontSize="14px"
-                        ></PageLink>
-                    </Box>
-                </Box>
-                <Box
-                    sx={{
-                        display: "flex",
-                        flexDirection: "column",
-                        justifyContent: "center",
-                        margin: "0 22px",
-                    }}
-                >
-                    <p
-                        style={{
-                            fontSize: "14px",
-                            color: "#737373",
-                            fontWeight: "600",
-                            padding: "0 8px",
-                            margin: "12px",
-                        }}
-                    >
-                        Your app and media
-                    </p>
-                    <Box>
-                        <PageLink
-                            icon={<i class="fa-solid fa-down-to-line"></i>}
-                            title="Archiving and downloading"
-                            my="0"
-                            fontSize="14px"
-                        ></PageLink>
-                        <PageLink
-                            icon={<i class="fa-solid fa-language"></i>}
-                            title="Language"
-                            my="0"
-                            fontSize="14px"
-                        ></PageLink>
-                        <PageLink
-                            icon={<i class="fa-solid fa-laptop-mobile"></i>}
-                            title="Website permissions"
-                            my="0"
-                            fontSize="14px"
-                        ></PageLink>
+                        <input
+                            type="text"
+                            style={{
+                                width: "100%",
+                                borderRadius: "10px",
+                                padding: "8px 16px",
+                                backgroundColor: "#fff",
+                                border: "1px solid #ccc",
+                            }}
+                            maxLength="150"
+                            placeholder="Bio"
+                        />
                     </Box>
                 </Box>
             </Box>
-            <Box>main content</Box>
         </Box>
     );
 }
