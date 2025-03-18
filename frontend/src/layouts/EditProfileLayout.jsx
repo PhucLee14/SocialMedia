@@ -12,7 +12,6 @@ function EditProfileLayout({ children }) {
                     sx={{
                         width: "330px",
                         borderRight: "1px solid #dbdbdb",
-                        marginTop: "16px",
                         padding: "16px 0",
                         height: "100vh",
                         overflowY: "scroll",

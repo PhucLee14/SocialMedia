@@ -2,13 +2,7 @@ import React, { useEffect, useReducer, useRef, useState } from "react";
 import { Box, Typography, Button, TextField, Switch } from "@mui/material";
 import ImageOutlinedIcon from "@mui/icons-material/ImageOutlined";
 import { storage } from "../firebase";
-import {
-    getStorage,
-    ref,
-    uploadBytesResumable,
-    getDownloadURL,
-    uploadBytes,
-} from "firebase/storage";
+import { ref, getDownloadURL, uploadBytes } from "firebase/storage";
 import { getUser } from "../services/userService";
 import { createPost } from "../services/postService";
 
@@ -146,14 +140,14 @@ function CreatePostModal({ onClick }) {
                     try {
                         await uploadBytes(imageRef, imagesObj[i]);
 
-                        const temp = await getDownloadURL(imageRef);
+                        const downloadUrl = await getDownloadURL(imageRef);
 
                         dispatch({
                             type: "SET_MEDIAS",
-                            payload: state.medias.push(temp),
+                            payload: state.medias.push(downloadUrl),
                         });
 
-                        console.log("Upload success:", temp);
+                        console.log("Upload success:", downloadUrl);
                     } catch (error) {
                         console.error("Upload error:", error);
                     }
