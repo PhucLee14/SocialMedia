@@ -95,10 +95,7 @@ function EditProfileLayout({ children }) {
                             ></PageLink>
                             <PageLink
                                 icon={
-                                    <i
-                                        class="fa-light fa-circle-half-stroke fa-rotate-by"
-                                        style={{ transform: "rotate(135deg)" }}
-                                    ></i>
+                                    <i class="fa-regular fa-shield-slash"></i>
                                 }
                                 title="Blocked"
                                 my="0"

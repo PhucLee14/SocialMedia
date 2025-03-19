@@ -1,6 +1,6 @@
 import Post from "../models/postModel.js";
 
-export const createPost = async (req, res) => {
+const createPost = async (req, res) => {
     const { author, content, medias, tag, hideLikeAndComment, allowComment } =
         req.body.data;
     try {
@@ -22,7 +22,7 @@ export const createPost = async (req, res) => {
     }
 };
 
-export const getPost = async (req, res) => {
+const getPost = async (req, res) => {
     try {
         const posts = await Post.find();
         return res.status(200).json(posts);
@@ -31,7 +31,7 @@ export const getPost = async (req, res) => {
     }
 };
 
-export const getPostById = async (req, res) => {
+const getPostById = async (req, res) => {
     try {
         const id = req.params.id;
         const post = await Post.findById(id);
@@ -40,3 +40,5 @@ export const getPostById = async (req, res) => {
         return res.status(500).json({ error: error.message });
     }
 };
+
+export { createPost, getPost, getPostById };

@@ -98,7 +98,14 @@ function DefaultLayout({ children }) {
                                 }}
                             >
                                 {navWidth === 250 ? (
-                                    "Instagram"
+                                    <p
+                                        style={{
+                                            textAlign: "left",
+                                            marginLeft: "26px",
+                                        }}
+                                    >
+                                        Instagram
+                                    </p>
                                 ) : (
                                     <i class="fa-brands fa-instagram"></i>
                                 )}

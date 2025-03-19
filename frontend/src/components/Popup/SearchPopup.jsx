@@ -10,7 +10,7 @@ function SearchPopup() {
                 top: 0,
                 minWidth: 350,
                 height: "100vh",
-                zIndex: 40,
+                zIndex: 90,
                 borderRadius: 2,
                 boxShadow: "8px 0 8px rgba(0,0,0,0.1)",
                 animation: "fade-right 0.4s ease-in-out",

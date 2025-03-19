@@ -11,20 +11,19 @@ function PageLink({ img, icon, title, link, onClick, my, fontSize }) {
                 mx: 1.5,
             }}
         >
-            <Button
+            <Box
                 component={Link}
                 to={link || ""}
                 onClick={onClick}
                 sx={{
-                    backgroundColor: "transparent",
+                    // backgroundColor: "transparent",
                     border: "none",
                     width: "100%",
                     minWidth: 0,
                     my: my ? my : 1,
-                    pl: 1,
+                    p: 1,
                     justifyContent: "flex-start",
                     textTransform: "none",
-                    // fontSize: fontSize ? fontSize : "1rem",
                     fontWeight: "medium",
                     display: "flex",
                     alignItems: "center",
@@ -34,6 +33,7 @@ function PageLink({ img, icon, title, link, onClick, my, fontSize }) {
                         backgroundColor: "grey.100",
                     },
                     color: "black",
+                    borderRadius: "8px",
                 }}
             >
                 {img ? (
@@ -47,14 +47,13 @@ function PageLink({ img, icon, title, link, onClick, my, fontSize }) {
                         {icon}
                     </Typography>
                 )}
-
                 <Typography
                     variant="body1"
                     sx={{ fontSize: fontSize ? fontSize : "1rem" }}
                 >
                     {title}
                 </Typography>
-            </Button>
+            </Box>
         </Box>
     );
 }
