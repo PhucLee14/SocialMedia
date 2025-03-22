@@ -23,10 +23,10 @@ const privateRoutes = [
         component: EditProfile,
         layout: EditProfileLayout,
     },
+    { path: "/:userName", component: Profile },
     { path: "/explore", component: Explore },
     { path: "/reels", component: Reels },
     { path: "/messages", component: Messages, layout: LayoutIcon },
-    { path: "/:userName", component: Profile },
 ];
 
 export { publicRoutes, privateRoutes };

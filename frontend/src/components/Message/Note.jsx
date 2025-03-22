@@ -11,7 +11,11 @@ function Note({ img, note }) {
                 width: "78px",
             }}
         >
-            <img src={img} style={{ width: "74px" }} alt="" />
+            <img
+                src={img}
+                style={{ width: "74px", borderRadius: "50%" }}
+                alt=""
+            />
             <p style={{ fontSize: "12px", color: "#737373" }}>
                 {note ? note : "Your note"}
             </p>

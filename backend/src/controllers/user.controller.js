@@ -46,4 +46,14 @@ const editProfile = async (req, res) => {
     }
 };
 
-export { getUser, getUserByID, getUserByUsername, editProfile };
+const getUserForSidebar = async (req, res) => {
+    return res.status(200).json(req.user);
+};
+
+export {
+    getUser,
+    getUserByID,
+    getUserByUsername,
+    editProfile,
+    getUserForSidebar,
+};

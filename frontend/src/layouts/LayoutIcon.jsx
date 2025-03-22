@@ -73,7 +73,7 @@ function DefaultLayout({ children }) {
 
     return (
         <Box display="flex">
-            <Box width={250} display="flex" position={"fixed"}>
+            <Box width={72} display="flex" position={"fixed"}>
                 <Box
                     display="flex"
                     flexDirection="column"
