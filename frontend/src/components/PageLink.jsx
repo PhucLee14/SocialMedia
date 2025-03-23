@@ -16,7 +16,6 @@ function PageLink({ img, icon, title, link, onClick, my, fontSize }) {
                 to={link || ""}
                 onClick={onClick}
                 sx={{
-                    // backgroundColor: "transparent",
                     border: "none",
                     width: "100%",
                     minWidth: 0,

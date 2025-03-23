@@ -11,12 +11,12 @@ const route = express.Router();
 
 route.get("/", protect, getUser);
 
+route.get("/getUserForSidebar", protect, getUserForSidebar);
+
 route.get("/:id", getUserByID);
 
 route.get("/u/:userName", getUserByUsername);
 
 route.patch("/account/edit/:id", editProfile);
-
-route.get("/aaaa", protect, getUserForSidebar);
 
 export default route;

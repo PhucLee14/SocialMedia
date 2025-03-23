@@ -47,7 +47,16 @@ const editProfile = async (req, res) => {
 };
 
 const getUserForSidebar = async (req, res) => {
-    return res.status(200).json(req.user);
+    try {
+        const loggedInUserId = req.user._id;
+        const filteredUser = await User.find({
+            _id: { $ne: loggedInUserId },
+        }).select("-password");
+        res.status(200).json(filteredUser);
+    } catch (error) {
+        console.log("Error in getUserForSidebar: ".error.message);
+        res.status(500).json({ error: "Internal server error" });
+    }
 };
 
 export {

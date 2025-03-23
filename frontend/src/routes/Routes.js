@@ -9,6 +9,7 @@ import Messages from "../pages/Messages";
 import Profile from "../pages/Profile";
 import Reels from "../pages/Reels";
 import Register from "../pages/Register";
+import MessageLayout from "../layouts/MessageLayout";
 
 const publicRoutes = [
     { path: "/login", component: Login, layout: null },
@@ -26,7 +27,8 @@ const privateRoutes = [
     { path: "/:userName", component: Profile },
     { path: "/explore", component: Explore },
     { path: "/reels", component: Reels },
-    { path: "/messages", component: Messages, layout: LayoutIcon },
+    { path: "/messages", component: Messages, layout: MessageLayout },
+    { path: "/messages/:id", component: Messages, layout: MessageLayout },
 ];
 
 export { publicRoutes, privateRoutes };

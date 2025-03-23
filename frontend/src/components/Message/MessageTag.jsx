@@ -1,16 +1,20 @@
 import { Box } from "@mui/material";
 import React from "react";
 import camup2 from "../../../public/camup2.jpg";
+import { Link } from "react-router-dom";
 
-function MessageTag({ img, name, lastMessage }) {
+function MessageTag({ img, name, lastMessage, link }) {
     return (
         <Box
+            component={Link}
+            to={link || ""}
             sx={{
                 display: "flex",
                 padding: "8px 24px",
                 cursor: "pointer",
                 width: "100%",
                 "&:hover": { backgroundColor: "#efefef" },
+                alignItems: "center",
             }}
         >
             <img

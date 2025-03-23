@@ -15,3 +15,7 @@ export const getUserById = (id) => {
 export const editProfile = (id, data) => {
     return api.patch(`/api/user/account/edit/${id}`, data);
 };
+
+export const getUserForSideBar = () => {
+    return api.get(`/api/user/getUserForSidebar`);
+};
