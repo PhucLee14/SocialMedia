@@ -22,8 +22,8 @@ function MessageTag({ img, name, lastMessage, link }) {
                 alt=""
                 style={{
                     width: "56px",
-                    borderRadius: "50%",
                     marginRight: "10px",
+                    borderRadius: "50%",
                 }}
             />
             <Box>

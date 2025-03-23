@@ -5,5 +5,5 @@ export const getMessage = (id) => {
 };
 
 export const sendMessage = (id, data) => {
-    return api.post(`/api/send/${id}`, data);
+    return api.post(`/api/message/send/${id}`, data);
 };

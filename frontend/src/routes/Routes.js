@@ -27,7 +27,7 @@ const privateRoutes = [
     { path: "/:userName", component: Profile },
     { path: "/explore", component: Explore },
     { path: "/reels", component: Reels },
-    { path: "/messages", component: Messages, layout: MessageLayout },
+    { path: "/message", component: Messages, layout: MessageLayout },
     { path: "/messages/:id", component: Messages, layout: MessageLayout },
 ];
 
