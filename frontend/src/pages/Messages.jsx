@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Box, TextField } from "@mui/material";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { getMessage, sendMessage } from "../services/messageService";
 import { getUserById } from "../services/userService";
 
@@ -47,46 +47,7 @@ function Messages() {
     };
 
     return !conversations && !user ? (
-        <Box
-            sx={{
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "center",
-                alignItems: "center",
-                width: "calc(100% - 400px)",
-            }}
-        >
-            <Box
-                sx={{
-                    padding: "34px 30px",
-                    border: "2px solid #000",
-                    borderRadius: "50%",
-                }}
-            >
-                <i class="fa-brands fa-facebook-messenger fa-2xl"></i>
-            </Box>
-            <Box
-                sx={{
-                    fontSize: "22px",
-                }}
-            >
-                Your messages
-            </Box>
-            <Box sx={{ color: "#737373", mt: "16px" }}>
-                Send a message to start a chat.
-            </Box>
-            <Box
-                sx={{
-                    backgroundColor: "#0095f6",
-                    color: "#fff",
-                    padding: "6px 12px",
-                    borderRadius: "10px",
-                    mt: "16px",
-                }}
-            >
-                Send message
-            </Box>
-        </Box>
+        ""
     ) : (
         <Box sx={{ width: "calc(100% - 40px)" }}>
             <Box
@@ -97,6 +58,7 @@ function Messages() {
                     p: "20px 16px",
                     borderBottom: "1px solid #ccc",
                     width: "100%",
+                    position: "fixed",
                 }}
             >
                 <Box sx={{ display: "flex", alignItems: "center" }}>
@@ -126,9 +88,53 @@ function Messages() {
                     display: "flex",
                     flexDirection: "column",
                     gap: "3px",
-                    m: "20px",
+                    m: "85px 0",
+                    p: "0 20px 20px",
+                    overflowY: "scroll",
+                    height: "calc(100vh - 160px)",
                 }}
             >
+                <Box
+                    sx={{
+                        alignSelf: "center",
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        m: "24px 0",
+                    }}
+                >
+                    <img
+                        src={user.profilePicture}
+                        alt=""
+                        style={{ width: "96px", borderRadius: "50%" }}
+                    />
+                    <p
+                        style={{
+                            fontWeight: "600",
+                            fontSize: "18px",
+                            margin: "12px 0 0",
+                        }}
+                    >
+                        {user.fullName}
+                    </p>
+                    <Box sx={{ color: "#737373", fontSize: "14px" }}>
+                        {user.userName} · Instagram
+                    </Box>
+                    <Box
+                        component={Link}
+                        to={`/${user.userName}`}
+                        sx={{
+                            backgroundColor: "#efefef",
+                            p: "4px 16px",
+                            borderRadius: "8px",
+                            fontSize: "14px",
+                            fontWeight: "600",
+                            m: "20px 0",
+                        }}
+                    >
+                        View Profile
+                    </Box>
+                </Box>
                 {conversations
                     ? conversations.map((conversation) =>
                           conversation.senderId == me._id ? (

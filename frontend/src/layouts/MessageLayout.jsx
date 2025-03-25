@@ -29,7 +29,13 @@ function MessageLayout({ children }) {
                         height: "100vh",
                     }}
                 >
-                    <Box sx={{ width: "400px", borderRight: "1px solid #ccc" }}>
+                    <Box
+                        sx={{
+                            width: "400px",
+                            height: "100vh",
+                            borderRight: "1px solid #ccc",
+                        }}
+                    >
                         <Box sx={{ margin: "40px 20px 20px" }}>
                             <Box
                                 sx={{
