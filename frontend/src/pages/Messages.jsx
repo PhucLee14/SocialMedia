@@ -3,6 +3,9 @@ import { Box, TextField } from "@mui/material";
 import { Link, useParams } from "react-router-dom";
 import { getMessage, sendMessage } from "../services/messageService";
 import { getUserById } from "../services/userService";
+import io from "socket.io-client";
+
+const socket = io("http://localhost:5000");
 
 function Messages() {
     const { id } = useParams();
@@ -11,38 +14,65 @@ function Messages() {
     const [message, setMessage] = useState("");
     const me = JSON.parse(localStorage.getItem("user"));
     useEffect(() => {
-        const getConversations = async () => {
+        const fetchData = async () => {
             try {
-                const data = await getMessage(id);
-                setConversations(data);
-                console.log(data);
+                const messages = await getMessage(id);
+                setConversations(messages);
+
+                const userData = await getUserById(id);
+                setUser(userData);
             } catch (error) {
-                console.log(error);
+                console.error("Error fetching data:", error);
             }
         };
-        const getUser = async () => {
-            try {
-                const data = await getUserById(id);
-                setUser(data);
-            } catch (error) {
-                console.log(error);
-            }
-        };
-        getConversations();
-        getUser();
+
+        fetchData();
     }, [id]);
+
+    useEffect(() => {
+        if (user && me) {
+            const roomId = [user._id, me._id].sort().join("-");
+            socket.emit("join_chat", roomId);
+
+            // Lắng nghe tin nhắn mới
+            socket.on("receive_message", (newMessage) => {
+                setConversations((prev) => [...prev, newMessage]);
+            });
+        }
+
+        return () => {
+            if (user && me) {
+                const roomId = [user._id, me._id].sort().join("-");
+                socket.emit("leave_chat", roomId);
+                socket.off("receive_message");
+            }
+        };
+    }, [user, me]);
 
     const handleSendMessage = async (e) => {
         e.preventDefault();
-        console.log(message);
-        if (message != "") {
-            try {
-                const data = await sendMessage(id, { message });
-                setMessage("");
-                console.log(data);
-            } catch (error) {
-                console.log(error);
-            }
+        if (!message.trim()) return;
+
+        const messageData = {
+            senderId: me._id,
+            receiverId: user._id,
+            message: message.trim(),
+            roomId: [user._id, me._id].sort().join("-"),
+            timestamp: new Date(),
+        };
+
+        // Gửi tin nhắn qua Socket.IO
+        socket.emit("send_message", messageData);
+
+        // Cập nhật UI ngay lập tức
+        setConversations((prev) => [...prev, messageData]);
+        setMessage("");
+
+        // Lưu tin nhắn vào database
+        try {
+            await sendMessage(id, { message: message.trim() });
+        } catch (error) {
+            console.error("Error saving message:", error);
         }
     };
 
@@ -61,8 +91,8 @@ function Messages() {
                     position: "fixed",
                 }}
             >
-                <Box sx={{ display: "flex", alignItems: "center" }}>
-                    {user ? (
+                {user && (
+                    <Box sx={{ display: "flex", alignItems: "center" }}>
                         <img
                             src={user.profilePicture}
                             alt=""
@@ -72,11 +102,10 @@ function Messages() {
                                 marginRight: "10px",
                             }}
                         />
-                    ) : (
-                        ""
-                    )}
-                    <p style={{ fontWeight: "600" }}>{user.fullName}</p>
-                </Box>
+
+                        <p style={{ fontWeight: "600" }}>{user.fullName}</p>
+                    </Box>
+                )}
                 <Box sx={{ display: "flex", gap: "16px" }}>
                     <i class="fa-regular fa-phone fa-xl"></i>
                     <i class="fa-regular fa-video fa-xl"></i>
@@ -94,47 +123,49 @@ function Messages() {
                     height: "calc(100vh - 160px)",
                 }}
             >
-                <Box
-                    sx={{
-                        alignSelf: "center",
-                        display: "flex",
-                        flexDirection: "column",
-                        alignItems: "center",
-                        m: "24px 0",
-                    }}
-                >
-                    <img
-                        src={user.profilePicture}
-                        alt=""
-                        style={{ width: "96px", borderRadius: "50%" }}
-                    />
-                    <p
-                        style={{
-                            fontWeight: "600",
-                            fontSize: "18px",
-                            margin: "12px 0 0",
-                        }}
-                    >
-                        {user.fullName}
-                    </p>
-                    <Box sx={{ color: "#737373", fontSize: "14px" }}>
-                        {user.userName} · Instagram
-                    </Box>
+                {user && (
                     <Box
-                        component={Link}
-                        to={`/${user.userName}`}
                         sx={{
-                            backgroundColor: "#efefef",
-                            p: "4px 16px",
-                            borderRadius: "8px",
-                            fontSize: "14px",
-                            fontWeight: "600",
-                            m: "20px 0",
+                            alignSelf: "center",
+                            display: "flex",
+                            flexDirection: "column",
+                            alignItems: "center",
+                            m: "24px 0",
                         }}
                     >
-                        View Profile
+                        <img
+                            src={user.profilePicture}
+                            alt=""
+                            style={{ width: "96px", borderRadius: "50%" }}
+                        />
+                        <p
+                            style={{
+                                fontWeight: "600",
+                                fontSize: "18px",
+                                margin: "12px 0 0",
+                            }}
+                        >
+                            {user.fullName}
+                        </p>
+                        <Box sx={{ color: "#737373", fontSize: "14px" }}>
+                            {user.userName} · Instagram
+                        </Box>
+                        <Box
+                            component={Link}
+                            to={`/${user.userName}`}
+                            sx={{
+                                backgroundColor: "#efefef",
+                                p: "4px 16px",
+                                borderRadius: "8px",
+                                fontSize: "14px",
+                                fontWeight: "600",
+                                m: "20px 0",
+                            }}
+                        >
+                            View Profile
+                        </Box>
                     </Box>
-                </Box>
+                )}
                 {conversations
                     ? conversations.map((conversation) =>
                           conversation.senderId == me._id ? (
