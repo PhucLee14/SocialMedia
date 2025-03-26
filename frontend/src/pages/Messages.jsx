@@ -1,11 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Box, TextField } from "@mui/material";
 import { Link, useParams } from "react-router-dom";
 import { getMessage, sendMessage } from "../services/messageService";
 import { getUserById } from "../services/userService";
 import io from "socket.io-client";
 
-const socket = io("http://localhost:5000");
+const socket = io("http://localhost:3000", {
+    transports: ["websocket"],
+    withCredentials: true,
+});
 
 function Messages() {
     const { id } = useParams();
@@ -13,11 +16,13 @@ function Messages() {
     const [user, setUser] = useState(null);
     const [message, setMessage] = useState("");
     const me = JSON.parse(localStorage.getItem("user"));
+    const messagesEndRef = useRef(null);
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const messages = await getMessage(id);
                 setConversations(messages);
+                scrollToBottom();
 
                 const userData = await getUserById(id);
                 setUser(userData);
@@ -30,11 +35,15 @@ function Messages() {
     }, [id]);
 
     useEffect(() => {
+        scrollToBottom();
+    }, [conversations]);
+
+    useEffect(() => {
         if (user && me) {
             const roomId = [user._id, me._id].sort().join("-");
             socket.emit("join_chat", roomId);
 
-            // Lắng nghe tin nhắn mới
+            // Listen new message
             socket.on("receive_message", (newMessage) => {
                 setConversations((prev) => [...prev, newMessage]);
             });
@@ -49,6 +58,10 @@ function Messages() {
         };
     }, [user, me]);
 
+    const scrollToBottom = () => {
+        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    };
+
     const handleSendMessage = async (e) => {
         e.preventDefault();
         if (!message.trim()) return;
@@ -61,11 +74,11 @@ function Messages() {
             timestamp: new Date(),
         };
 
-        // Gửi tin nhắn qua Socket.IO
+        // Send message by socket
         socket.emit("send_message", messageData);
 
-        // Cập nhật UI ngay lập tức
-        setConversations((prev) => [...prev, messageData]);
+        // Update UI
+        // setConversations((prev) => [...prev, messageData]);
         setMessage("");
 
         // Lưu tin nhắn vào database
@@ -195,6 +208,7 @@ function Messages() {
                           )
                       )
                     : ""}
+                <Box ref={messagesEndRef} />
             </Box>
             <Box
                 sx={{

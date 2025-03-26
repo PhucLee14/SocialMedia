@@ -2,11 +2,13 @@ import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import cookieParser from "cookie-parser";
+import http from "http";
 import authRoute from "./src/routes/auth.route.js";
 import userRoute from "./src/routes/user.route.js";
 import postRoute from "./src/routes/post.route.js";
 import messageRoute from "./src/routes/message.route.js";
 import connectToMongoDb from "./src/config/connectToMongoDB.js";
+import initializeSocket from "./src/socket/socket.js";
 const app = express();
 dotenv.config();
 
@@ -31,7 +33,12 @@ app.use("/api/user", userRoute);
 app.use("/api/post", postRoute);
 app.use("/api/message", messageRoute);
 
-app.listen(PORT, () => {
+// Tạo HTTP server
+const server = http.createServer(app);
+
+initializeSocket(server);
+
+server.listen(PORT, () => {
     connectToMongoDb();
     console.log(`Server running on port ${PORT}`);
 });
