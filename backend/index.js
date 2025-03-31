@@ -33,7 +33,6 @@ app.use("/api/user", userRoute);
 app.use("/api/post", postRoute);
 app.use("/api/message", messageRoute);
 
-// Tạo HTTP server
 const server = http.createServer(app);
 
 initializeSocket(server);

@@ -81,7 +81,7 @@ function Messages() {
         // setConversations((prev) => [...prev, messageData]);
         setMessage("");
 
-        // Lưu tin nhắn vào database
+        // Save to DB
         try {
             await sendMessage(id, { message: message.trim() });
         } catch (error) {

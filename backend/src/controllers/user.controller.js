@@ -1,3 +1,4 @@
+import Post from "../models/postModel.js";
 import User from "../models/userModel.js";
 
 const getUser = async (req, res) => {
@@ -59,10 +60,58 @@ const getUserForSidebar = async (req, res) => {
     }
 };
 
+const likePost = async (req, res) => {
+    const { userId } = req.params;
+    const { postId } = req.body;
+
+    try {
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        if (user.likes.includes(postId)) {
+            user.likes = user.likes.filter((id) => id != postId);
+        } else {
+            user.likes.push(postId);
+        }
+
+        await user.save();
+        return res.status(200).json(user);
+    } catch (error) {
+        return res.status(500).json({ error: error.message });
+    }
+};
+
+const savePost = async (req, res) => {
+    const { userId } = req.params;
+    const { postId } = req.body;
+
+    try {
+        const post = await Post.findById(postId);
+        if (!post) {
+            return res.status(404).json({ message: "Post not found" });
+        }
+
+        if (post.saves.includes(userId)) {
+            post.saves = post.saves.filter((id) => id != userId);
+        } else {
+            post.saves.push(userId);
+        }
+
+        await post.save();
+        return res.status(200).json(post);
+    } catch (error) {
+        return res.status(500).json({ error: error.message });
+    }
+};
+
 export {
     getUser,
     getUserByID,
     getUserByUsername,
     editProfile,
     getUserForSidebar,
+    likePost,
+    savePost,
 };

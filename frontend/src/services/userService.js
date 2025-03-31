@@ -19,3 +19,11 @@ export const editProfile = (id, data) => {
 export const getUserForSideBar = () => {
     return api.get(`/api/user/getUserForSidebar`);
 };
+
+export const postLiked = (userId, postId) => {
+    return api.post(`/api/user/like/${userId}`, { postId });
+};
+
+export const postSaved = (userId, postId) => {
+    return api.post(`/api/user/save/${userId}`, { postId });
+};

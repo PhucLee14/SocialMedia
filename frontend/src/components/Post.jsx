@@ -5,7 +5,7 @@ import { Box, Input } from "@mui/material";
 import { Link } from "react-router-dom";
 import LoadingProcess from "./Loading/LoadingProcess";
 
-function Post({ id }) {
+function Post({ id, isLiked, isSaved, onClickLike, onClickSave }) {
     const [post, setPost] = useState(null);
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -130,12 +130,33 @@ function Post({ id }) {
                 <Box
                     sx={{ display: "flex", gap: "16px", alignItems: "center" }}
                 >
-                    <i class="fa-regular fa-heart fa-xl"></i>
-                    <i class="fa-regular fa-comment fa-flip-horizontal fa-xl"></i>
-                    <i class="fa-regular fa-paper-plane fa-xl"></i>
+                    <i
+                        className={`fa-${
+                            isLiked ? "solid" : "regular"
+                        } fa-heart fa-xl`}
+                        style={{
+                            cursor: "pointer",
+                            ...(isLiked && { color: "#ff3040" }),
+                        }}
+                        onClick={onClickLike}
+                    />
+                    <i
+                        class="fa-regular fa-comment fa-flip-horizontal fa-xl"
+                        style={{ cursor: "pointer" }}
+                    ></i>
+                    <i
+                        class="fa-regular fa-paper-plane fa-xl"
+                        style={{ cursor: "pointer" }}
+                    ></i>
                 </Box>
                 <Box>
-                    <i class="fa-regular fa-bookmark fa-xl"></i>
+                    <i
+                        className={`fa-${
+                            isSaved ? "solid" : "regular"
+                        } fa-bookmark fa-xl`}
+                        style={{ cursor: "pointer" }}
+                        onClick={onClickSave}
+                    ></i>
                 </Box>
             </Box>
             <Box

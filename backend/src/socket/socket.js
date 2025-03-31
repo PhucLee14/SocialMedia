@@ -12,19 +12,19 @@ const initializeSocket = (server) => {
     io.on("connection", (socket) => {
         console.log("User connected:", socket.id);
 
-        // Tham gia phòng chat
+        // Join chat room
         socket.on("join_chat", (roomId) => {
             socket.join(roomId);
             console.log(`User ${socket.id} joined room: ${roomId}`);
         });
 
-        // Xử lý tin nhắn mới
+        // Handle new message
         socket.on("send_message", (data) => {
             console.log("Message received:", data);
             io.to(data.roomId).emit("receive_message", data);
         });
 
-        // Ngắt kết nối
+        // Disconnect
         socket.on("disconnect", () => {
             console.log("User disconnected:", socket.id);
         });
