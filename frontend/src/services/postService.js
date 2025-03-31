@@ -19,3 +19,7 @@ export const likePost = (postId, userId) => {
 export const savePost = (postId, userId) => {
     return api.put(`/api/post/${postId}/save`, { userId });
 };
+
+export const getPostByUserId = (id) => {
+    return api.get(`/api/post/u/${id}`);
+};

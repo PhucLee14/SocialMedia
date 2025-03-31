@@ -104,7 +104,7 @@ function DefaultLayout({ children }) {
                                             marginLeft: "26px",
                                         }}
                                     >
-                                        Outstagram
+                                        Onstagram
                                     </p>
                                 ) : (
                                     <i class="fa-brands fa-instagram"></i>

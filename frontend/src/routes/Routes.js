@@ -6,11 +6,14 @@ import ForgotPassword from "../pages/ForgotPassword";
 import Home from "../pages/Home";
 import Login from "../pages/Login";
 import Messages from "../pages/Messages";
-import Profile from "../pages/Profile";
+import Profile from "../pages/Profile/Profile";
 import Reels from "../pages/Reels";
 import Register from "../pages/Register";
 import MessageLayout from "../layouts/MessageLayout";
 import MessageEmpty from "../pages/MessageEmpty";
+import ProfileLayout from "../layouts/ProfileLayout";
+import ProfileSaved from "../pages/Profile/ProfileSaved";
+import ProfileTagged from "../pages/Profile/ProfileTagged";
 
 const publicRoutes = [
     { path: "/login", component: Login, layout: null },
@@ -25,7 +28,17 @@ const privateRoutes = [
         component: EditProfile,
         layout: EditProfileLayout,
     },
-    { path: "/:userName", component: Profile },
+    { path: "/:userName", component: Profile, layout: ProfileLayout },
+    {
+        path: "/:userName/saved",
+        component: ProfileSaved,
+        layout: ProfileLayout,
+    },
+    {
+        path: "/:userName/tagged",
+        component: ProfileTagged,
+        layout: ProfileLayout,
+    },
     { path: "/explore", component: Explore },
     { path: "/reels", component: Reels },
     { path: "/messages", component: MessageEmpty, layout: MessageLayout },

@@ -41,6 +41,16 @@ const getPostById = async (req, res) => {
     }
 };
 
+const getPostByUserId = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const posts = await Post.find({ author: id });
+        return res.status(200).json(posts);
+    } catch (error) {
+        return res.status(500).json({ error: error.message });
+    }
+};
+
 const likePost = async (req, res) => {
     const { postId } = req.params;
     const { userId } = req.body;
@@ -86,4 +96,11 @@ const savePost = async (req, res) => {
     }
 };
 
-export { createPost, getPost, getPostById, likePost, savePost };
+export {
+    createPost,
+    getPost,
+    getPostById,
+    getPostByUserId,
+    likePost,
+    savePost,
+};

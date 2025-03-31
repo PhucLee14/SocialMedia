@@ -100,7 +100,7 @@ function Messages() {
                     alignItems: "center",
                     p: "20px 16px",
                     borderBottom: "1px solid #ccc",
-                    width: "100%",
+                    width: "calc(100% - 400px)",
                     position: "fixed",
                 }}
             >
