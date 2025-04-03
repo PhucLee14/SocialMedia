@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import SeachPopup from "../components/Popup/SearchPopup";
 import { Box } from "@mui/material";
 import { getUser, postLiked, postSaved } from "../services/userService";
 import { Link } from "react-router-dom";
@@ -12,9 +11,9 @@ function Home() {
     const [likedPosts, setLikedPosts] = useState({});
     const [savedPosts, setSavedPosts] = useState({});
 
-    //Get post
+    //Get posts
     useEffect(() => {
-        const fetchPost = async () => {
+        const fetchPosts = async () => {
             try {
                 const data = await getPosts();
                 setPosts(data);
@@ -23,12 +22,12 @@ function Home() {
             }
         };
 
-        fetchPost();
+        fetchPosts();
     }, []);
 
-    //Get user
+    //Get users
     useEffect(() => {
-        const fetchUser = async () => {
+        const fetchUsers = async () => {
             try {
                 const data = await getUser();
                 setUser(data);
@@ -37,13 +36,16 @@ function Home() {
             }
         };
 
-        fetchUser();
+        fetchUsers();
     }, []);
 
     useEffect(() => {
         if (posts && user) {
             const initialLikedPosts = posts.reduce((acc, post) => {
-                acc[post._id] = post.likes.includes(user._id);
+                acc[post._id] = {
+                    isLiked: post.likes.includes(user._id),
+                    countLikes: post.likes.length,
+                };
                 return acc;
             }, {});
             setLikedPosts(initialLikedPosts);
@@ -57,21 +59,24 @@ function Home() {
         }
     }, [posts, user]);
 
+    console.log("likedPosts: ", likedPosts);
+
     const handleLikePost = async (post) => {
         try {
             await likePost(post._id, user._id);
             await postLiked(user._id, post._id);
+
             setLikedPosts((prev) => ({
                 ...prev,
-                [post._id]: !prev[post._id],
+                [post._id]: {
+                    isLiked: !prev[post._id].isLiked,
+                    countLikes: prev[post._id].isLiked
+                        ? prev[post._id].countLikes - 1
+                        : prev[post._id].countLikes + 1,
+                },
             }));
-            console.log(post._id, user._id);
         } catch (error) {
-            setLikedPosts((prev) => ({
-                ...prev,
-                [post._id]: prev[post._id],
-            }));
-            console.log(error);
+            console.error("Failed to like post:", error);
         }
     };
 
@@ -108,10 +113,11 @@ function Home() {
                           <Post
                               key={post._id}
                               id={post._id}
-                              isLiked={likedPosts[post._id]}
+                              isLiked={likedPosts[post._id]?.isLiked}
                               isSaved={savedPosts[post._id]}
                               onClickLike={() => handleLikePost(post)}
                               onClickSave={() => handleSavePost(post)}
+                              countLikes={likedPosts[post._id]?.countLikes}
                           />
                       ))
                     : ""}

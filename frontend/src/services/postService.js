@@ -20,6 +20,10 @@ export const savePost = (postId, userId) => {
     return api.put(`/api/post/${postId}/save`, { userId });
 };
 
+export const getPostById = (id) => {
+    return api.get(`/api/post/${id}`);
+};
+
 export const getPostByUserId = (id) => {
     return api.get(`/api/post/u/${id}`);
 };

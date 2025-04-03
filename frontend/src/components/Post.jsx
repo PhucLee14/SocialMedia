@@ -1,11 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { use, useEffect, useState } from "react";
 import { getPost } from "../services/postService";
 import { getUserById } from "../services/userService";
 import { Box, Input } from "@mui/material";
 import { Link } from "react-router-dom";
 import LoadingProcess from "./Loading/LoadingProcess";
+import LikeEmotion from "./Action/LikeEmotion";
+import SaveEmotion from "./Action/SaveEmotion";
 
-function Post({ id, isLiked, isSaved, onClickLike, onClickSave }) {
+function Post({ id, isLiked, isSaved, onClickLike, onClickSave, countLikes }) {
     const [post, setPost] = useState(null);
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -119,45 +121,51 @@ function Post({ id, isLiked, isSaved, onClickLike, onClickSave }) {
                     </Box>
                 ))}
             </Box>
+            <Box>
+                <Box
+                    sx={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        width: "468px",
+                        mt: "12px",
+                    }}
+                >
+                    <Box
+                        sx={{
+                            display: "flex",
+                            gap: "16px",
+                            alignItems: "center",
+                        }}
+                    >
+                        <LikeEmotion isLiked={isLiked} onClick={onClickLike} />
+                        <i
+                            class="fa-regular fa-comment fa-flip-horizontal fa-xl"
+                            style={{ cursor: "pointer" }}
+                        ></i>
+                        <i
+                            class="fa-regular fa-paper-plane fa-xl"
+                            style={{ cursor: "pointer" }}
+                        ></i>
+                    </Box>
+                    <Box>
+                        <SaveEmotion isSaved={isSaved} onClick={onClickSave} />
+                    </Box>
+                </Box>
+            </Box>
             <Box
                 sx={{
-                    display: "flex",
-                    justifyContent: "space-between",
+                    fontSize: "14px",
+                    fontWeight: "600",
+                    mt: "8px",
                     width: "468px",
-                    mt: "12px",
+                    // alignSelf: "start",
                 }}
             >
-                <Box
-                    sx={{ display: "flex", gap: "16px", alignItems: "center" }}
-                >
-                    <i
-                        className={`fa-${
-                            isLiked ? "solid" : "regular"
-                        } fa-heart fa-xl`}
-                        style={{
-                            cursor: "pointer",
-                            ...(isLiked && { color: "#ff3040" }),
-                        }}
-                        onClick={onClickLike}
-                    />
-                    <i
-                        class="fa-regular fa-comment fa-flip-horizontal fa-xl"
-                        style={{ cursor: "pointer" }}
-                    ></i>
-                    <i
-                        class="fa-regular fa-paper-plane fa-xl"
-                        style={{ cursor: "pointer" }}
-                    ></i>
-                </Box>
-                <Box>
-                    <i
-                        className={`fa-${
-                            isSaved ? "solid" : "regular"
-                        } fa-bookmark fa-xl`}
-                        style={{ cursor: "pointer" }}
-                        onClick={onClickSave}
-                    ></i>
-                </Box>
+                {countLikes > 0 && (
+                    <p>
+                        {countLikes} {countLikes === 1 ? "like" : "likes"}
+                    </p>
+                )}
             </Box>
             <Box
                 sx={{

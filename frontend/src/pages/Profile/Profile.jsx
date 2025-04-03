@@ -1,8 +1,78 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Box } from "@mui/material";
+import { getPostById, getPostByUserId } from "../../services/postService";
+import PostPreview from "../../components/PostPreview";
+import { getUserByUserName } from "../../services/userService";
+import { useParams } from "react-router-dom";
+import PostDetail from "../PostDetail";
+import PostDetailModal from "../../components/Modal/PostDetailModal";
 
 function Profile() {
-    return (
+    const param = useParams();
+    const [posts, setPosts] = useState([]);
+    const [user, setUser] = useState(null);
+    const [detailPost, setDetailPost] = useState(null);
+    const [displayDetailPost, setDisplayDetailPost] = useState(false);
+
+    useEffect(() => {
+        const getUser = async () => {
+            try {
+                const data = await getUserByUserName(param.userName);
+                setUser(data);
+            } catch (error) {
+                console.error("Failed to fetch user:", error);
+            }
+        };
+        getUser();
+    }, []);
+
+    useEffect(() => {
+        const getPost = async () => {
+            try {
+                const data = await getPostByUserId(user._id);
+                setPosts(data);
+            } catch (error) {
+                console.log(error);
+            }
+        };
+        getPost();
+    }, [user]);
+
+    const handleGetPost = async (postId) => {
+        try {
+            const data = await getPostById(postId);
+            setDetailPost(data);
+        } catch (error) {
+            console.log(error);
+        }
+    };
+    return posts.length > 0 ? (
+        <>
+            <Box sx={{ display: "flex", width: "940px" }}>
+                {posts.map((post) => (
+                    <PostPreview
+                        post={post}
+                        onClick={(e) => {
+                            e.preventDefault();
+                            handleGetPost(post._id);
+                        }}
+                        link={`/${user.userName}/${post._id}`}
+                    />
+                ))}
+            </Box>
+            {detailPost && (
+                <PostDetailModal
+                    onClick={() => {
+                        setDisplayDetailPost(false);
+                        setDetailPost(null);
+                    }}
+                    post={detailPost}
+                >
+                    <PostDetail post={detailPost} />
+                </PostDetailModal>
+            )}
+        </>
+    ) : (
         <Box
             sx={{
                 display: "flex",

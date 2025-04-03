@@ -1,5 +1,6 @@
 import EditProfileLayout from "../layouts/EditProfileLayout";
-import LayoutIcon from "../layouts/LayoutIcon";
+import MessageLayout from "../layouts/MessageLayout";
+import ProfileLayout from "../layouts/ProfileLayout";
 import EditProfile from "../pages/SettingPages/EditProfile";
 import Explore from "../pages/Explore";
 import ForgotPassword from "../pages/ForgotPassword";
@@ -9,11 +10,10 @@ import Messages from "../pages/Messages";
 import Profile from "../pages/Profile/Profile";
 import Reels from "../pages/Reels";
 import Register from "../pages/Register";
-import MessageLayout from "../layouts/MessageLayout";
 import MessageEmpty from "../pages/MessageEmpty";
-import ProfileLayout from "../layouts/ProfileLayout";
 import ProfileSaved from "../pages/Profile/ProfileSaved";
 import ProfileTagged from "../pages/Profile/ProfileTagged";
+import PostDetail from "../pages/PostDetail";
 
 const publicRoutes = [
     { path: "/login", component: Login, layout: null },
@@ -29,6 +29,11 @@ const privateRoutes = [
         layout: EditProfileLayout,
     },
     { path: "/:userName", component: Profile, layout: ProfileLayout },
+    {
+        path: "/:userName/:postId",
+        component: PostDetail,
+        layout: Profile,
+    },
     {
         path: "/:userName/saved",
         component: ProfileSaved,

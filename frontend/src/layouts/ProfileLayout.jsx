@@ -18,16 +18,7 @@ function ProfileLayout({ children }) {
                 console.error("Failed to fetch user:", error);
             }
         };
-        const getPost = async () => {
-            try {
-                const data = await getPostByUserId(user._id);
-                console.log(data);
-            } catch (error) {
-                console.error("Failed to fetch user:", error);
-            }
-        };
         getUser();
-        getPost();
     }, []);
     return user ? (
         <Box sx={{ display: "flex" }}>
@@ -41,6 +32,7 @@ function ProfileLayout({ children }) {
                     alignItems: "center",
                     position: "absolute",
                     left: "128px",
+                    zIndex: "-1",
                 }}
             >
                 <Box

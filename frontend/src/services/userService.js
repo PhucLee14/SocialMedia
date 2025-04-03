@@ -21,9 +21,9 @@ export const getUserForSideBar = () => {
 };
 
 export const postLiked = (userId, postId) => {
-    return api.post(`/api/user/like/${userId}`, { postId });
+    return api.put(`/api/user/${userId}/like`, { postId });
 };
 
 export const postSaved = (userId, postId) => {
-    return api.post(`/api/user/save/${userId}`, { postId });
+    return api.put(`/api/user/${userId}/save`, { postId });
 };
