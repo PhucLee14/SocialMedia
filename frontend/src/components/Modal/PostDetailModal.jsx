@@ -37,35 +37,21 @@ function PostDetailModal({ post, onClick }) {
 
     const handleLikePost = async (post) => {
         try {
+            setLikedPosts((prev) => !prev);
             await likePost(post._id, user._id);
             await postLiked(user._id, post._id);
-            setLikedPosts((prev) => ({
-                ...prev,
-                [post._id]: !prev[post._id],
-            }));
             console.log(post._id, user._id);
         } catch (error) {
-            setLikedPosts((prev) => ({
-                ...prev,
-                [post._id]: prev[post._id],
-            }));
             console.log(error);
         }
     };
 
     const handleSavePost = async (post) => {
         try {
+            setSavedPosts((prev) => !prev);
             await postSaved(user._id, post._id);
             await savePost(post._id, user._id);
-            setSavedPosts((prev) => ({
-                ...prev,
-                [post._id]: !prev[post._id],
-            }));
         } catch (error) {
-            setSavedPosts((prev) => ({
-                ...prev,
-                [post._id]: prev[post._id],
-            }));
             console.log(error);
         }
     };
@@ -279,17 +265,10 @@ function PostDetailModal({ post, onClick }) {
                                         }}
                                     >
                                         <i class="fa-regular fa-face-smile fa-xl"></i>
-                                        <form
-                                            style={{ width: "100%" }}
-                                            // onSubmit={handleSendMessage}
-                                        >
+                                        <form style={{ width: "100%" }}>
                                             <TextField
                                                 placeholder="Message..."
                                                 fullWidth
-                                                // value={message}
-                                                // onChange={(e) => {
-                                                //     setMessage(e.target.value);
-                                                // }}
                                                 sx={{
                                                     backgroundColor: "#fff",
                                                     borderRadius: 6,

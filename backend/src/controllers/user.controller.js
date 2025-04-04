@@ -88,20 +88,42 @@ const savePost = async (req, res) => {
     const { postId } = req.body;
 
     try {
-        const post = await Post.findById(postId);
-        if (!post) {
+        const user = await User.findById(userId);
+        if (!user) {
             return res.status(404).json({ message: "Post not found" });
         }
 
-        if (post.saves.includes(userId)) {
-            post.saves = post.saves.filter((id) => id != userId);
+        if (user.saves.includes(postId)) {
+            user.saves = user.saves.filter((id) => id != postId);
         } else {
-            post.saves.push(userId);
+            user.saves.push(postId);
         }
 
-        await post.save();
+        await user.save();
         return res.status(200).json(post);
     } catch (error) {
+        return res.status(500).json({ error: error.message });
+    }
+};
+
+const searchUsers = async (req, res) => {
+    try {
+        const keyword = req.params.keyword || "";
+
+        if (!keyword.trim()) {
+            return res.status(400).json({ error: "Keyword cannot be empty" });
+        }
+
+        const users = await User.find({
+            $or: [
+                { userName: { $regex: keyword, $options: "i" } },
+                { fullName: { $regex: keyword, $options: "i" } },
+            ],
+        }).select("-password");
+
+        return res.status(200).json(users);
+    } catch (error) {
+        console.error("Error in searchUsers:", error);
         return res.status(500).json({ error: error.message });
     }
 };
@@ -114,4 +136,5 @@ export {
     getUserForSidebar,
     likePost,
     savePost,
+    searchUsers,
 };

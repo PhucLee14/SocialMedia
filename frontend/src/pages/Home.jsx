@@ -59,13 +59,8 @@ function Home() {
         }
     }, [posts, user]);
 
-    console.log("likedPosts: ", likedPosts);
-
     const handleLikePost = async (post) => {
         try {
-            await likePost(post._id, user._id);
-            await postLiked(user._id, post._id);
-
             setLikedPosts((prev) => ({
                 ...prev,
                 [post._id]: {
@@ -75,6 +70,8 @@ function Home() {
                         : prev[post._id].countLikes + 1,
                 },
             }));
+            await postLiked(user._id, post._id);
+            await likePost(post._id, user._id);
         } catch (error) {
             console.error("Failed to like post:", error);
         }
@@ -82,12 +79,15 @@ function Home() {
 
     const handleSavePost = async (post) => {
         try {
-            await postSaved(user._id, post._id);
-            await savePost(post._id, user._id);
             setSavedPosts((prev) => ({
                 ...prev,
                 [post._id]: !prev[post._id],
             }));
+            const postSavedResponse = await postSaved(user._id, post._id);
+            console.log("postSaved response:", postSavedResponse);
+
+            const savePostResponse = await savePost(post._id, user._id);
+            console.log("savePost response:", savePostResponse);
         } catch (error) {
             setSavedPosts((prev) => ({
                 ...prev,
@@ -97,8 +97,6 @@ function Home() {
         }
     };
 
-    console.log(user);
-    console.log(posts);
     return user ? (
         <Box
             sx={{

@@ -70,6 +70,7 @@ function Post({ id, isLiked, isSaved, onClickLike, onClickSave, countLikes }) {
                         justifyContent: "start",
                         alignItems: "center",
                         mb: "12px",
+                        // zIndex: -1,
                     }}
                 >
                     <Link to={`/${user.userName}`}>

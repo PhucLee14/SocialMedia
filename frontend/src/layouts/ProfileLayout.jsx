@@ -6,6 +6,7 @@ import { getUserByUserName } from "../services/userService";
 import { getPostByUserId } from "../services/postService";
 
 function ProfileLayout({ children }) {
+    const me = JSON.parse(localStorage.getItem("user"));
     const param = useParams();
     const [user, setUser] = useState(null);
 
@@ -19,7 +20,7 @@ function ProfileLayout({ children }) {
             }
         };
         getUser();
-    }, []);
+    }, [param]);
     return user ? (
         <Box sx={{ display: "flex" }}>
             <DefaultLayout></DefaultLayout>
@@ -75,32 +76,67 @@ function ProfileLayout({ children }) {
                             >
                                 {user.userName}
                             </p>
-                            <Link
-                                style={{
-                                    borderRadius: "0.5rem",
-                                    backgroundColor: "#efefef",
-                                    padding: "0.5rem 0.75rem",
-                                    marginRight: "0.5rem",
-                                    textDecoration: "none",
-                                    fontSize: "0.875rem",
-                                    fontWeight: "600",
-                                }}
-                                to={`/account/edit`}
-                            >
-                                Edit profile
-                            </Link>
-                            <Link
-                                style={{
-                                    borderRadius: "0.5rem",
-                                    backgroundColor: "#efefef",
-                                    padding: "0.5rem 0.75rem",
-                                    textDecoration: "none",
-                                    fontSize: "0.875rem",
-                                    fontWeight: "600",
-                                }}
-                            >
-                                View archive
-                            </Link>
+                            {me._id === user._id ? (
+                                <>
+                                    <Link
+                                        style={{
+                                            borderRadius: "0.5rem",
+                                            backgroundColor: "#efefef",
+                                            padding: "7px 16px",
+                                            marginRight: "0.5rem",
+                                            textDecoration: "none",
+                                            fontSize: "0.875rem",
+                                            fontWeight: "600",
+                                        }}
+                                        to={`/account/edit`}
+                                    >
+                                        Edit profile
+                                    </Link>
+                                    <Link
+                                        style={{
+                                            borderRadius: "0.5rem",
+                                            backgroundColor: "#efefef",
+                                            padding: "7px 16px",
+                                            textDecoration: "none",
+                                            fontSize: "0.875rem",
+                                            fontWeight: "600",
+                                        }}
+                                    >
+                                        View archive
+                                    </Link>
+                                </>
+                            ) : (
+                                <>
+                                    <Box
+                                        sx={{
+                                            borderRadius: "0.5rem",
+                                            backgroundColor: "#0095e7",
+                                            color: "#fff",
+                                            padding: "7px 16px",
+                                            marginRight: "0.5rem",
+                                            textDecoration: "none",
+                                            fontSize: "0.875rem",
+                                            fontWeight: "600",
+                                            cursor: "pointer",
+                                        }}
+                                    >
+                                        Follow
+                                    </Box>
+                                    <Link
+                                        style={{
+                                            borderRadius: "0.5rem",
+                                            backgroundColor: "#efefef",
+                                            padding: "7px 16px",
+                                            textDecoration: "none",
+                                            fontSize: "0.875rem",
+                                            fontWeight: "600",
+                                        }}
+                                        to={`/messages/${user._id}`}
+                                    >
+                                        Message
+                                    </Link>
+                                </>
+                            )}
                         </Box>
                         <Box
                             sx={{

@@ -14,6 +14,7 @@ import MessageEmpty from "../pages/MessageEmpty";
 import ProfileSaved from "../pages/Profile/ProfileSaved";
 import ProfileTagged from "../pages/Profile/ProfileTagged";
 import PostDetail from "../pages/PostDetail";
+import DefaultLayout from "../layouts/DefaultLayout";
 
 const publicRoutes = [
     { path: "/login", component: Login, layout: null },
@@ -32,7 +33,7 @@ const privateRoutes = [
     {
         path: "/:userName/:postId",
         component: PostDetail,
-        layout: Profile,
+        layout: DefaultLayout,
     },
     {
         path: "/:userName/saved",

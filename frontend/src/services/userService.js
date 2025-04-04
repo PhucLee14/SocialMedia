@@ -27,3 +27,7 @@ export const postLiked = (userId, postId) => {
 export const postSaved = (userId, postId) => {
     return api.put(`/api/user/${userId}/save`, { postId });
 };
+
+export const searchUsers = (keyword) => {
+    return api.get(`/api/user/search/${keyword}`);
+};

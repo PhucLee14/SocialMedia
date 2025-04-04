@@ -1,7 +1,26 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Box, Paper, TextField, Typography, Divider } from "@mui/material";
+import { searchUsers } from "../../services/userService";
+import LoadingSkeleton from "../Loading/LoadingSkeleton";
+import UserTag from "../UserTag";
 
 function SearchPopup() {
+    const [keyword, setKeyword] = useState("");
+    const [users, setUsers] = useState([]);
+    const [skeleton, setSkeleton] = useState(true);
+    useEffect(() => {
+        const getKeyword = async () => {
+            try {
+                const data = await searchUsers(keyword);
+                setUsers(data);
+                setSkeleton(false);
+            } catch (error) {
+                console.log(error);
+            }
+        };
+        getKeyword();
+    }, [keyword]);
+    console.log(users);
     return (
         <Paper
             elevation={4}
@@ -16,7 +35,7 @@ function SearchPopup() {
                 animation: "fade-right 0.4s ease-in-out",
             }}
         >
-            <Box px={4}>
+            <Box px={2}>
                 <Typography variant="h5" fontWeight="bold" py={3}>
                     Search
                 </Typography>
@@ -36,9 +55,44 @@ function SearchPopup() {
                             border: "none",
                         },
                     }}
+                    value={keyword}
+                    onChange={(e) => setKeyword(e.target.value)}
                 />
             </Box>
             <Divider />
+            <Box>
+                <Box
+                    sx={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        padding: "8px 24px",
+                    }}
+                >
+                    <Box sx={{ fontWeight: "600" }}>Recent</Box>
+                    <Box
+                        sx={{
+                            fontSize: "14px",
+                            fontWeight: "600",
+                            color: "#0095e7",
+                        }}
+                    >
+                        Clean all
+                    </Box>
+                </Box>
+                {users && !skeleton ? (
+                    users.length > 0 ? (
+                        users.map((user) => (
+                            <Box key={user.id}>
+                                <UserTag user={user} />
+                            </Box>
+                        ))
+                    ) : (
+                        ""
+                    )
+                ) : (
+                    <LoadingSkeleton />
+                )}
+            </Box>
         </Paper>
     );
 }

@@ -24,7 +24,7 @@ function Profile() {
             }
         };
         getUser();
-    }, []);
+    }, [param]);
 
     useEffect(() => {
         const getPost = async () => {
