@@ -1,13 +1,13 @@
-import { Schema } from "mongoose";
+import mongoose from "mongoose";
 
-const commentModel = Schema({
+const commentModel = new mongoose.Schema({
     userId: {
-        type: Schema.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         ref: "User",
         required: true,
     },
     postId: {
-        type: Schema.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         ref: "Post",
         required: true,
     },
@@ -17,7 +17,7 @@ const commentModel = Schema({
     },
     replies: [
         {
-            type: Schema.Types.ObjectId,
+            type: mongoose.Schema.Types.ObjectId,
             ref: "Comment",
         },
     ],

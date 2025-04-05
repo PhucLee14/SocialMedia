@@ -2,13 +2,16 @@ import { Box, TextField } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom";
 import { getUserById, postLiked, postSaved } from "../../services/userService";
+import { getComments } from "../../services/commentService";
 import { Link } from "react-router-dom";
 import LikeEmotion from "../Action/LikeEmotion";
 import SaveEmotion from "../Action/SaveEmotion";
 import { likePost, savePost } from "../../services/postService";
+import CommentTag from "../CommentTag";
 
 function PostDetailModal({ post, onClick }) {
     const user = JSON.parse(localStorage.getItem("user"));
+    const [comments, setComments] = useState([]);
     const [author, setAuthor] = useState(null);
     const [likedPosts, setLikedPosts] = useState(null);
     const [savedPosts, setSavedPosts] = useState(null);
@@ -21,8 +24,17 @@ function PostDetailModal({ post, onClick }) {
                 console.log(error);
             }
         };
+        const getComment = async () => {
+            try {
+                const data = await getComments(post._id);
+                setComments(data);
+            } catch (error) {}
+        };
         getAuthor();
+        getComment();
     }, []);
+
+    console.log("comments: ", comments);
 
     useEffect(() => {
         if (post) {
@@ -148,43 +160,49 @@ function PostDetailModal({ post, onClick }) {
                                 height: "calc(100% - 64px)",
                             }}
                         >
-                            <Box
-                                sx={{
-                                    display: "flex",
-                                    alignItems: "center",
-                                    padding: "16px 16px 80px",
-                                    gap: "16px",
-                                    width: "100%",
-                                }}
-                            >
+                            <Box>
                                 <Box
-                                    component={Link}
-                                    to={`/${author.userName}`}
+                                    sx={{
+                                        display: "flex",
+                                        alignItems: "center",
+                                        padding: "16px",
+                                        gap: "16px",
+                                        width: "100%",
+                                    }}
                                 >
-                                    <img
-                                        src={author.profilePicture}
-                                        alt=""
-                                        style={{
-                                            width: "32px",
-                                            borderRadius: "50%",
-                                        }}
-                                    />
-                                </Box>
-                                <Box
-                                    sx={{ fontWeight: "600", fontSize: "14px" }}
-                                    component={Link}
-                                    to={`/${author.userName}`}
-                                >
-                                    {author.userName}
-                                    <span
-                                        style={{
-                                            fontWeight: "400",
-                                            paddingLeft: "8px",
-                                        }}
+                                    <Box
+                                        component={Link}
+                                        to={`/${author.userName}`}
                                     >
-                                        {post.content}
-                                    </span>
+                                        <img
+                                            src={author.profilePicture}
+                                            alt=""
+                                            style={{
+                                                width: "32px",
+                                                borderRadius: "50%",
+                                            }}
+                                        />
+                                    </Box>
+                                    <Box
+                                        sx={{
+                                            fontWeight: "600",
+                                            fontSize: "14px",
+                                        }}
+                                        component={Link}
+                                        to={`/${author.userName}`}
+                                    >
+                                        {author.userName}
+                                        <span
+                                            style={{
+                                                fontWeight: "400",
+                                                paddingLeft: "8px",
+                                            }}
+                                        >
+                                            {post.content}
+                                        </span>
+                                    </Box>
                                 </Box>
+                                {comments ? {} : ""}
                             </Box>
                             <Box>
                                 <Box
