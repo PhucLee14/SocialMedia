@@ -1,6 +1,7 @@
 import express from "express";
 import {
     editProfile,
+    followUser,
     getUser,
     getUserByID,
     getUserByUsername,
@@ -27,5 +28,7 @@ route.patch("/account/edit/:id", editProfile);
 route.put("/:userId/like", likePost);
 
 route.put("/:userId/save", savePost);
+
+route.put("/:userId/new-follow", followUser);
 
 export default route;

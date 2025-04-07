@@ -90,7 +90,7 @@ const savePost = async (req, res) => {
     try {
         const user = await User.findById(userId);
         if (!user) {
-            return res.status(404).json({ message: "Post not found" });
+            return res.status(404).json({ message: "User not found" });
         }
 
         if (user.saves.includes(postId)) {
@@ -100,7 +100,7 @@ const savePost = async (req, res) => {
         }
 
         await user.save();
-        return res.status(200).json(post);
+        return res.status(200).json(user);
     } catch (error) {
         return res.status(500).json({ error: error.message });
     }
@@ -128,6 +128,38 @@ const searchUsers = async (req, res) => {
     }
 };
 
+const followUser = async (req, res) => {
+    try {
+        const { userId } = req.params;
+        const { followId } = req.body;
+        const user = await User.findById(userId);
+        const follower = await User.findById(followId);
+        if (!follower) {
+            return res.status(404).json({ message: "Follower not found" });
+        }
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+        if (user.following.includes(followId)) {
+            user.following = user.following.filter((id) => id != followId);
+        } else {
+            user.following.push(followId);
+        }
+        if (follower.followers.includes(userId)) {
+            follower.followers = follower.followers.filter(
+                (id) => id != userId
+            );
+        } else {
+            follower.followers.push(userId);
+        }
+        await user.save();
+        await follower.save();
+        return res.status(200).json(user);
+    } catch (error) {
+        return res.status(500).json({ error: error.message });
+    }
+};
+
 export {
     getUser,
     getUserByID,
@@ -137,4 +169,5 @@ export {
     likePost,
     savePost,
     searchUsers,
+    followUser,
 };
