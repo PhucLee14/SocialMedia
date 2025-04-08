@@ -6,6 +6,8 @@ import { Link } from "react-router-dom";
 import LoadingProcess from "./Loading/LoadingProcess";
 import LikeEmotion from "./Action/LikeEmotion";
 import SaveEmotion from "./Action/SaveEmotion";
+import Time from "./Time";
+import CommentEmotion from "./Action/CommentEmotion";
 
 function Post({ id, isLiked, isSaved, onClickLike, onClickSave, countLikes }) {
     const [post, setPost] = useState(null);
@@ -90,6 +92,22 @@ function Post({ id, isLiked, isSaved, onClickLike, onClickSave, countLikes }) {
                             <Box sx={{ fontWeight: 600 }}>{user.userName}</Box>
                         </Link>
                     </Box>
+                    <Box
+                        sx={{
+                            display: "flex",
+                            alignItems: "center",
+                        }}
+                    >
+                        <Box
+                            sx={{
+                                mx: "6px",
+                                color: "#737373",
+                            }}
+                        >
+                            •
+                        </Box>
+                        <Time time={post.createdAt} isShort={true} />
+                    </Box>
                 </Box>
                 <Box
                     sx={{
@@ -139,10 +157,7 @@ function Post({ id, isLiked, isSaved, onClickLike, onClickSave, countLikes }) {
                         }}
                     >
                         <LikeEmotion isLiked={isLiked} onClick={onClickLike} />
-                        <i
-                            class="fa-regular fa-comment fa-flip-horizontal fa-xl"
-                            style={{ cursor: "pointer" }}
-                        ></i>
+                        <CommentEmotion />
                         <i
                             class="fa-regular fa-paper-plane fa-xl"
                             style={{ cursor: "pointer" }}
@@ -191,7 +206,7 @@ function Post({ id, isLiked, isSaved, onClickLike, onClickSave, countLikes }) {
                 sx={{
                     width: "468px",
                     mt: "12px",
-                    borderBottom: "1px solid #999",
+                    borderBottom: "1px solid #ddd",
                     pb: "24px",
                 }}
             >

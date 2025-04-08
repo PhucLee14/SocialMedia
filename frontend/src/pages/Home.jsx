@@ -107,17 +107,19 @@ function Home() {
         >
             <Box sx={{ width: 630 }}>
                 {posts
-                    ? posts.map((post) => (
-                          <Post
-                              key={post._id}
-                              id={post._id}
-                              isLiked={likedPosts[post._id]?.isLiked}
-                              isSaved={savedPosts[post._id]}
-                              onClickLike={() => handleLikePost(post)}
-                              onClickSave={() => handleSavePost(post)}
-                              countLikes={likedPosts[post._id]?.countLikes}
-                          />
-                      ))
+                    ? posts
+                          .map((post) => (
+                              <Post
+                                  key={post._id}
+                                  id={post._id}
+                                  isLiked={likedPosts[post._id]?.isLiked}
+                                  isSaved={savedPosts[post._id]}
+                                  onClickLike={() => handleLikePost(post)}
+                                  onClickSave={() => handleSavePost(post)}
+                                  countLikes={likedPosts[post._id]?.countLikes}
+                              />
+                          ))
+                          .reverse()
                     : ""}
             </Box>
             <Box

@@ -161,10 +161,23 @@ function DefaultLayout({ children }) {
                         )}
                     </Box>
 
-                    <Box display="flex" justifyContent="center">
-                        <IconButton onClick={handleMenuOpen}>
+                    <Box padding={2}>
+                        <Box
+                            onClick={handleMenuOpen}
+                            display={"flex"}
+                            alignItems={"center"}
+                            gap={2}
+                            fontSize={20}
+                            padding={1}
+                            borderRadius={2}
+                            sx={{
+                                cursor: "pointer",
+                                "&:hover": { backgroundColor: "#efefef" },
+                            }}
+                        >
                             <i className="fa-regular fa-bars"></i>
-                        </IconButton>
+                            <Box fontSize={16}>More</Box>
+                        </Box>
                         <Menu
                             anchorEl={menuAnchor}
                             open={Boolean(menuAnchor)}

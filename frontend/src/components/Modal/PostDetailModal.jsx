@@ -8,6 +8,7 @@ import LikeEmotion from "../Action/LikeEmotion";
 import SaveEmotion from "../Action/SaveEmotion";
 import { likePost, savePost } from "../../services/postService";
 import CommentTag from "../CommentTag";
+import Time from "../Time";
 
 function PostDetailModal({ post, onClick }) {
     const user = JSON.parse(localStorage.getItem("user"));
@@ -200,9 +201,18 @@ function PostDetailModal({ post, onClick }) {
                                         >
                                             {post.content}
                                         </span>
+
+                                        <Time
+                                            time={post.createdAt}
+                                            isShort={true}
+                                        />
                                     </Box>
                                 </Box>
-                                {comments ? {} : ""}
+                                {comments
+                                    ? comments.map((comment) => (
+                                          <CommentTag comment={comment} />
+                                      ))
+                                    : ""}
                             </Box>
                             <Box>
                                 <Box
@@ -265,6 +275,10 @@ function PostDetailModal({ post, onClick }) {
                                             </p>
                                         )}
                                     </Box>
+                                    <Time
+                                        time={post.createdAt}
+                                        isShort={false}
+                                    />
                                 </Box>
                                 <Box
                                     sx={{

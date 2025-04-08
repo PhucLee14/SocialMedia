@@ -31,3 +31,7 @@ export const postSaved = (userId, postId) => {
 export const searchUsers = (keyword) => {
     return api.get(`/api/user/search/${keyword}`);
 };
+
+export const followUser = (userId, followId) => {
+    return api.put(`/api/user/${userId}/new-follow`, { followId });
+};

@@ -2,13 +2,14 @@ import { Box } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import DefaultLayout from "./DefaultLayout";
 import { Link, useParams } from "react-router-dom";
-import { getUserByUserName } from "../services/userService";
+import { followUser, getUserByUserName } from "../services/userService";
 import { getPostByUserId } from "../services/postService";
 
 function ProfileLayout({ children }) {
     const me = JSON.parse(localStorage.getItem("user"));
     const param = useParams();
     const [user, setUser] = useState(null);
+    const [isFollowing, setIsFollowing] = useState(false);
 
     useEffect(() => {
         const getUser = async () => {
@@ -21,6 +22,28 @@ function ProfileLayout({ children }) {
         };
         getUser();
     }, [param]);
+
+    useEffect(() => {
+        const checkFollowing = () => {
+            if (user && me) {
+                const isFollowing = user.followers.includes(me._id);
+                setIsFollowing(isFollowing);
+            }
+        };
+        checkFollowing();
+    }, [user]);
+
+    const handleFollowUser = async () => {
+        try {
+            setIsFollowing((prev) => !prev);
+            await followUser(me._id, user._id);
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    console.log("isFollowing", isFollowing);
+
     return user ? (
         <Box sx={{ display: "flex" }}>
             <DefaultLayout></DefaultLayout>
@@ -107,20 +130,42 @@ function ProfileLayout({ children }) {
                                 </>
                             ) : (
                                 <>
-                                    <Box
-                                        sx={{
-                                            borderRadius: "0.5rem",
-                                            backgroundColor: "#0095e7",
-                                            color: "#fff",
-                                            padding: "7px 16px",
-                                            marginRight: "0.5rem",
-                                            textDecoration: "none",
-                                            fontSize: "0.875rem",
-                                            fontWeight: "600",
-                                            cursor: "pointer",
-                                        }}
-                                    >
-                                        Follow
+                                    <Box onClick={() => handleFollowUser()}>
+                                        {" "}
+                                        {isFollowing ? (
+                                            <Box
+                                                sx={{
+                                                    borderRadius: "0.5rem",
+                                                    backgroundColor: "#efefef",
+                                                    color: "#000",
+                                                    padding: "7px 16px",
+                                                    marginRight: "0.5rem",
+                                                    textDecoration: "none",
+                                                    fontSize: "0.875rem",
+                                                    fontWeight: "600",
+                                                    cursor: "pointer",
+                                                }}
+                                            >
+                                                Following{" "}
+                                                <i class="fa-light fa-chevron-down"></i>
+                                            </Box>
+                                        ) : (
+                                            <Box
+                                                sx={{
+                                                    borderRadius: "0.5rem",
+                                                    backgroundColor: "#0095e7",
+                                                    color: "#fff",
+                                                    padding: "7px 16px",
+                                                    marginRight: "0.5rem",
+                                                    textDecoration: "none",
+                                                    fontSize: "0.875rem",
+                                                    fontWeight: "600",
+                                                    cursor: "pointer",
+                                                }}
+                                            >
+                                                Follow
+                                            </Box>
+                                        )}
                                     </Box>
                                     <Link
                                         style={{
