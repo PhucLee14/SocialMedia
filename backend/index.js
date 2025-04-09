@@ -8,6 +8,7 @@ import userRoute from "./src/routes/user.route.js";
 import postRoute from "./src/routes/post.route.js";
 import messageRoute from "./src/routes/message.route.js";
 import commentRoute from "./src/routes/comment.route.js";
+import mailRoute from "./src/routes/mail.route.js";
 import connectToMongoDb from "./src/config/connectToMongoDB.js";
 import initializeSocket from "./src/socket/socket.js";
 const app = express();
@@ -34,6 +35,7 @@ app.use("/api/user", userRoute);
 app.use("/api/post", postRoute);
 app.use("/api/message", messageRoute);
 app.use("/api/comment", commentRoute);
+app.use("/api/mail", mailRoute);
 
 const server = http.createServer(app);
 

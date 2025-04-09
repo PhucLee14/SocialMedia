@@ -9,7 +9,6 @@ const postModel = Schema(
         },
         content: {
             type: String,
-            required: true,
         },
         medias: [
             {

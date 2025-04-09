@@ -19,6 +19,10 @@ export const register = async (req, res) => {
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
 
+        const verificationCode = Math.floor(
+            100000 + Math.random() * 900000
+        ).toString();
+
         const defaultPic =
             "https://i.pinimg.com/736x/a0/4d/84/a04d849cf591c2f980548b982f461401.jpg";
 
@@ -29,6 +33,7 @@ export const register = async (req, res) => {
             password: hashedPassword,
             fullName,
             profilePicture: defaultPic,
+            verificationCode,
         });
 
         if (newUser) {
