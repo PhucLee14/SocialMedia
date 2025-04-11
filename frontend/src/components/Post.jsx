@@ -8,11 +8,14 @@ import LikeEmotion from "./Action/LikeEmotion";
 import SaveEmotion from "./Action/SaveEmotion";
 import Time from "./Time";
 import CommentEmotion from "./Action/CommentEmotion";
+import PostDetailModal from "./Modal/PostDetailModal";
+import PostDetail from "../pages/PostDetail";
 
 function Post({ id, isLiked, isSaved, onClickLike, onClickSave, countLikes }) {
     const [post, setPost] = useState(null);
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [detailPost, setDetailPost] = useState(null);
 
     //Get post
     useEffect(() => {
@@ -157,7 +160,12 @@ function Post({ id, isLiked, isSaved, onClickLike, onClickSave, countLikes }) {
                         }}
                     >
                         <LikeEmotion isLiked={isLiked} onClick={onClickLike} />
-                        <CommentEmotion />
+                        <CommentEmotion
+                            onClick={() => {
+                                console.log(post);
+                                setDetailPost(post);
+                            }}
+                        />
                         <i
                             class="fa-regular fa-paper-plane fa-xl"
                             style={{ cursor: "pointer" }}
@@ -220,6 +228,16 @@ function Post({ id, isLiked, isSaved, onClickLike, onClickSave, countLikes }) {
                     }}
                 ></Input>
             </Box>
+            {detailPost && (
+                <PostDetailModal
+                    onClick={() => {
+                        setDetailPost(null);
+                    }}
+                    post={detailPost}
+                >
+                    <PostDetail post={detailPost} />
+                </PostDetailModal>
+            )}
         </Box>
     ) : (
         ""

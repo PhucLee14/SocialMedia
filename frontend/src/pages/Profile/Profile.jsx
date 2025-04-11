@@ -12,7 +12,6 @@ function Profile() {
     const [posts, setPosts] = useState([]);
     const [user, setUser] = useState(null);
     const [detailPost, setDetailPost] = useState(null);
-    const [displayDetailPost, setDisplayDetailPost] = useState(false);
 
     useEffect(() => {
         const getUser = async () => {
@@ -63,7 +62,7 @@ function Profile() {
             {detailPost && (
                 <PostDetailModal
                     onClick={() => {
-                        setDisplayDetailPost(false);
+                        // setDisplayDetailPost(false);
                         setDetailPost(null);
                     }}
                     post={detailPost}

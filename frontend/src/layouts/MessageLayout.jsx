@@ -2,20 +2,30 @@ import React, { useEffect, useState } from "react";
 import { Box } from "@mui/material";
 import Note from "../components/Message/Note";
 import MessageTag from "../components/Message/MessageTag";
-import { getUserForSideBar } from "../services/userService";
+import { getUserById, getUserForSideBar } from "../services/userService";
 import LoadingSkeleton from "../components/Loading/LoadingSkeleton";
 import LayoutIcon from "./LayoutIcon";
 
 function MessageLayout({ children }) {
     const userInfo = JSON.parse(localStorage.getItem("user"));
+    const [user, setUser] = useState(null);
     const [userMessages, setUserMessages] = useState(null);
 
     useEffect(() => {
+        const getUser = async () => {
+            try {
+                const data = await getUserById(userInfo._id);
+                setUser(data);
+            } catch (error) {
+                console.log(error);
+            }
+        };
         const getMessagesInfo = async () => {
             const data = await getUserForSideBar();
             setUserMessages(data);
             console.log(data);
         };
+        getUser();
         getMessagesInfo();
     }, []);
     console.log(userMessages);
@@ -36,29 +46,31 @@ function MessageLayout({ children }) {
                             borderRight: "1px solid #ccc",
                         }}
                     >
-                        <Box sx={{ margin: "40px 20px 20px" }}>
-                            <Box
-                                sx={{
-                                    display: "flex",
-                                    justifyContent: "space-between",
-                                    alignItems: "center",
-                                    mb: "40px",
-                                }}
-                            >
-                                <p
-                                    style={{
-                                        fontSize: "20px",
-                                        fontWeight: "700",
+                        {user && (
+                            <Box sx={{ margin: "40px 20px 20px" }}>
+                                <Box
+                                    sx={{
+                                        display: "flex",
+                                        justifyContent: "space-between",
+                                        alignItems: "center",
+                                        mb: "40px",
                                     }}
                                 >
-                                    {userInfo.userName}
-                                </p>
-                                <i class="fa-regular fa-pen-to-square fa-xl"></i>
+                                    <p
+                                        style={{
+                                            fontSize: "20px",
+                                            fontWeight: "700",
+                                        }}
+                                    >
+                                        {user.userName}
+                                    </p>
+                                    <i class="fa-regular fa-pen-to-square fa-xl"></i>
+                                </Box>
+                                <Box>
+                                    <Note img={user.profilePicture} />
+                                </Box>
                             </Box>
-                            <Box>
-                                <Note img={userInfo.profilePicture} />
-                            </Box>
-                        </Box>
+                        )}
                         <Box
                             sx={{
                                 display: "flex",
