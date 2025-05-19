@@ -27,17 +27,10 @@ function DefaultLayout({ children }) {
     const [navWidth, setNavWidth] = useState(250);
 
     useEffect(() => {
-        const fetchUser = async () => {
-            try {
-                const data = await getUser();
-                setUser(data);
-            } catch (error) {
-                console.error("Failed to fetch user:", error);
-            }
-        };
-
-        fetchUser();
+        setUser(JSON.parse(localStorage.getItem("user")));
     }, []);
+
+    console.log("user layout: ", user);
 
     const handleLogout = async () => {
         try {

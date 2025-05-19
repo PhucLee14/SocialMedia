@@ -10,12 +10,14 @@ import Time from "./Time";
 import CommentEmotion from "./Action/CommentEmotion";
 import PostDetailModal from "./Modal/PostDetailModal";
 import PostDetail from "../pages/PostDetail";
+import PostMenuModal from "./Modal/PostMenuModal";
 
 function Post({ id, isLiked, isSaved, onClickLike, onClickSave, countLikes }) {
     const [post, setPost] = useState(null);
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
     const [detailPost, setDetailPost] = useState(null);
+    const [postMenu, setPostMenu] = useState(false);
 
     //Get post
     useEffect(() => {
@@ -117,6 +119,10 @@ function Post({ id, isLiked, isSaved, onClickLike, onClickSave, countLikes }) {
                         fontSize: "16px",
                         cursor: "pointer",
                         mr: "4px",
+                    }}
+                    onClick={() => {
+                        setPostMenu(true);
+                        console.log(post);
                     }}
                 >
                     <i class="fa-solid fa-ellipsis-vertical fa-rotate-90"></i>
@@ -237,6 +243,12 @@ function Post({ id, isLiked, isSaved, onClickLike, onClickSave, countLikes }) {
                 >
                     <PostDetail post={detailPost} />
                 </PostDetailModal>
+            )}
+            {postMenu && (
+                <PostMenuModal
+                    onClick={() => setPostMenu(false)}
+                    link={`${user.userName}/${post._id}`}
+                />
             )}
         </Box>
     ) : (

@@ -2,7 +2,7 @@ import { Box, TextField } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom";
 import { getUserById, postLiked, postSaved } from "../../services/userService";
-import { getComments } from "../../services/commentService";
+import { getComments, sendComment } from "../../services/commentService";
 import { Link } from "react-router-dom";
 import LikeEmotion from "../Action/LikeEmotion";
 import SaveEmotion from "../Action/SaveEmotion";
@@ -12,7 +12,8 @@ import Time from "../Time";
 
 function PostDetailModal({ post, onClick }) {
     const user = JSON.parse(localStorage.getItem("user"));
-    const [comments, setComments] = useState([]);
+    const [commentList, setCommentList] = useState([]);
+    const [comment, setComment] = useState("");
     const [author, setAuthor] = useState(null);
     const [likedPosts, setLikedPosts] = useState(null);
     const [savedPosts, setSavedPosts] = useState(null);
@@ -25,17 +26,22 @@ function PostDetailModal({ post, onClick }) {
                 console.log(error);
             }
         };
+
         const getComment = async () => {
             try {
                 const data = await getComments(post._id);
-                setComments(data);
-            } catch (error) {}
+                setCommentList(Array.isArray(data) ? data : []);
+            } catch (error) {
+                console.log(error);
+                setCommentList([]);
+            }
         };
-        getAuthor();
-        getComment();
-    }, []);
 
-    console.log("comments: ", comments);
+        if (post) {
+            getAuthor();
+            getComment();
+        }
+    }, [post]);
 
     useEffect(() => {
         if (post) {
@@ -69,8 +75,20 @@ function PostDetailModal({ post, onClick }) {
         }
     };
 
-    console.log("likedPosts: ", likedPosts);
-    console.log("savedPosts: ", savedPosts);
+    const handleSendComment = async (e) => {
+        e.preventDefault();
+        if (comment.trim() === "") return;
+        try {
+            await sendComment(user._id, post._id, comment);
+            setComment("");
+            const updatedComments = await getComments(post._id);
+            setCommentList(
+                Array.isArray(updatedComments) ? updatedComments : []
+            );
+        } catch (error) {
+            console.log(error);
+        }
+    };
 
     return ReactDOM.createPortal(
         <Box
@@ -208,8 +226,8 @@ function PostDetailModal({ post, onClick }) {
                                         />
                                     </Box>
                                 </Box>
-                                {comments
-                                    ? comments.map((comment) => (
+                                {commentList
+                                    ? commentList.map((comment) => (
                                           <CommentTag comment={comment} />
                                       ))
                                     : ""}
@@ -297,10 +315,19 @@ function PostDetailModal({ post, onClick }) {
                                         }}
                                     >
                                         <i class="fa-regular fa-face-smile fa-xl"></i>
-                                        <form style={{ width: "100%" }}>
+                                        <form
+                                            style={{ width: "100%" }}
+                                            onSubmit={(e) =>
+                                                handleSendComment(e)
+                                            }
+                                        >
                                             <TextField
                                                 placeholder="Message..."
+                                                value={comment}
                                                 fullWidth
+                                                onChange={(e) =>
+                                                    setComment(e.target.value)
+                                                }
                                                 sx={{
                                                     backgroundColor: "#fff",
                                                     borderRadius: 6,
