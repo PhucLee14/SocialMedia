@@ -5,6 +5,7 @@ import { login } from "../services/authService";
 import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { setUserInfo } from "../redux/slices/userSlice";
+import AuthButton from "../components/Button/AuthButton";
 
 const authReducer = (authState, action) => {
     switch (action.type) {
@@ -49,9 +50,8 @@ function Login() {
 
     return (
         <div className="flex flex-col justify-center items-center h-screen">
-            <div className="flex flex-col items-center w-96 border border-gray-300 p-12">
-                <p className="mb-12">Web Name</p>
-                {/* <form action="" onSubmit={handleSubmit}> */}
+            <div className="flex flex-col items-center w-96 p-4">
+                <h1 className="text-2xl font-bold mb-8">Log in</h1>
                 <InputAuth
                     type="text"
                     placeholder="Phone number, username or email"
@@ -72,14 +72,13 @@ function Login() {
                         })
                     }
                 />
-                <button
-                    className="bg-blue-500 text-white w-full py-1 font-semibold rounded-lg cursor-pointer mt-4"
-                    onClick={handleSubmit}
-                >
-                    Log in
-                </button>
-                {/* </form> */}
-                <p className="my-4">OR</p>
+                <AuthButton text="Log in" onClick={handleSubmit} />
+                <div className="w-full relative">
+                    <div className="border-b-2 border-gray-300 w-full my-6"></div>
+                    <p className="text-sm font-semibold text-gray-400 absolute p-2 bg-white right-1/2 top-1/2 transform -translate-y-1/2 translate-x-1/2">
+                        OR
+                    </p>
+                </div>
                 <button className="text-blue-500 w-full font-semibold rounded-lg cursor-pointer">
                     Login with Facebook
                 </button>
@@ -87,15 +86,12 @@ function Login() {
                     Forgot Password?
                 </Link>
             </div>
-            <div className="flex justify-center w-96 border border-gray-300 p-4 mt-4">
-                <p>Don't have an account?</p>
-                <Link
-                    to="/register"
-                    className="text-blue-500 font-semibold ml-2"
-                >
-                    Sign up
-                </Link>
-            </div>
+            <Link
+                to="/register"
+                className="text-sm font-bold text-blue-500 absolute top-0 right-0 m-4 border-2 border-b-4 border-gray-300 rounded-2xl px-4 py-2"
+            >
+                SIGN UP
+            </Link>
         </div>
     );
 }

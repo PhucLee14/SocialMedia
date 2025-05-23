@@ -15,11 +15,19 @@ import ProfileSaved from "../pages/Profile/ProfileSaved";
 import ProfileTagged from "../pages/Profile/ProfileTagged";
 import PostDetail from "../pages/PostDetail";
 import DefaultLayout from "../layouts/DefaultLayout";
+import ResetPassword from "../pages/ResetPassword";
+import SendMailSuccess from "../pages/SendMailSuccess";
 
 const publicRoutes = [
     { path: "/login", component: Login, layout: null },
     { path: "/register", component: Register, layout: null },
     { path: "/forgotpassword", component: ForgotPassword, layout: null },
+    {
+        path: "/forgotpassword/success",
+        component: SendMailSuccess,
+        layout: null,
+    },
+    { path: "/resetpassword/:token", component: ResetPassword, layout: null },
 ];
 
 const privateRoutes = [

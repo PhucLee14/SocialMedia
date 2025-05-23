@@ -2,8 +2,10 @@ import RefreshToken from "../models/tokenModel.js";
 import User from "../models/userModel.js";
 import generateTokenAndSetCookie from "../utils/generateToken.js";
 import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
+import nodemailer from "nodemailer";
 
-export const register = async (req, res) => {
+const register = async (req, res) => {
     try {
         const { userName, email, phoneNumber, password, fullName } = req.body;
 
@@ -65,7 +67,7 @@ export const register = async (req, res) => {
     }
 };
 
-export const login = async (req, res) => {
+const login = async (req, res) => {
     try {
         const { userName, password } = req.body;
 
@@ -101,7 +103,7 @@ export const login = async (req, res) => {
     }
 };
 
-export const logout = async (req, res) => {
+const logout = async (req, res) => {
     try {
         const { refreshToken } = req.body;
         await RefreshToken.deleteOne({ token: refreshToken });
@@ -113,7 +115,7 @@ export const logout = async (req, res) => {
     }
 };
 
-export const setRefreshToken = async (req, res) => {
+const setRefreshToken = async (req, res) => {
     const refreshToken = req.cookies.refreshToken;
     if (!refreshToken)
         return res.status(401).json({ message: "Missing token" });
@@ -150,4 +152,103 @@ export const setRefreshToken = async (req, res) => {
     } catch (err) {
         res.status(403).json({ message: "Token verification failed" });
     }
+};
+
+const forgotPassword = async (req, res) => {
+    const { email } = req.body;
+    if (!email) return res.status(400).json({ error: "Email is required" });
+    try {
+        const user = await User.findOne({ email });
+        if (!user) {
+            return res.status(404).json({ error: "User not found" });
+        }
+        // Tạo token reset
+        const resetToken = jwt.sign(
+            { userId: user._id },
+            process.env.JWT_SECRET,
+            { expiresIn: "15m" }
+        );
+        // Lưu token vào DB
+        user.resetPasswordToken = resetToken;
+        user.resetPasswordExpires = Date.now() + 15 * 60 * 1000; // 15 phút
+        await user.save();
+        // Gửi email chứa link reset
+        const resetLink = `${process.env.FRONTEND_URL}/resetpassword/${resetToken}`;
+        const transporter = nodemailer.createTransport({
+            service: "gmail",
+            auth: {
+                user: process.env.EMAIL_USER,
+                pass: process.env.EMAIL_PASS,
+            },
+        });
+        await transporter.sendMail({
+            from: process.env.EMAIL_USER,
+            to: user.email,
+            subject: "Password Reset Request",
+            html: `
+                    <h2>Reset Your Password</h2>
+                    <p>Click the link below to reset your password. This link is valid for 15 minutes.</p>
+                    <a href="${resetLink}">${resetLink}</a>
+                `,
+        });
+        res.json({ message: "Reset password email sent successfully" });
+    } catch (err) {
+        console.error("Forgot password error:", err.message);
+        res.status(500).json({ error: "Something went wrong" });
+    }
+};
+
+const resetPassword = async (req, res) => {
+    const { token } = req.params;
+    const { newPassword } = req.body;
+
+    console.log("req: ", req.body);
+
+    if (!token || !newPassword) {
+        return res.status(400).json({
+            error: "Token and new password are required",
+            token: token,
+            newPassword: newPassword,
+        });
+    }
+
+    try {
+        // Xác thực token
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+        const user = await User.findOne({
+            _id: decoded.userId,
+            resetPasswordToken: token,
+            resetPasswordExpires: { $gt: Date.now() }, // Chưa hết hạn
+        });
+
+        if (!user) {
+            return res.status(400).json({ error: "Invalid or expired token" });
+        }
+
+        // Hash mật khẩu mới
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(newPassword, salt);
+
+        // Cập nhật mật khẩu và xóa token reset
+        user.password = hashedPassword;
+        user.resetPasswordToken = undefined;
+        user.resetPasswordExpires = undefined;
+
+        await user.save();
+
+        res.json({ message: "Password has been reset successfully" });
+    } catch (err) {
+        console.error("Reset password error:", err.message);
+        return res.status(400).json({ error: "Invalid or expired token" });
+    }
+};
+
+export {
+    register,
+    login,
+    logout,
+    setRefreshToken,
+    forgotPassword,
+    resetPassword,
 };

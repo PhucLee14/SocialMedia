@@ -3,6 +3,7 @@ import InputAuth from "../components/InputAuth";
 import { Link, useNavigate } from "react-router-dom";
 import { register } from "../services/authService";
 import toast from "react-hot-toast";
+import AuthButton from "../components/Button/AuthButton";
 
 const authReducer = (state, action) => {
     switch (action.type) {
@@ -46,16 +47,19 @@ function Register() {
         }
     };
     return (
-        <div className="flex flex-col justify-center items-center h-screen">
-            <div className="flex flex-col items-center w-96 border border-gray-300 p-12">
-                <p>Web Name</p>
+        <div className="flex flex-col justify-center items-center relative">
+            <div className="flex flex-col items-center w-96 p-10">
+                <h1 className="text-2xl font-bold mb-4">Sign up</h1>
                 <p className="text-gray-500 text-sm font-semibold my-4 text-center">
                     Sign up to see photos and videos from your friends.
                 </p>
-                <button className="bg-blue-500 text-white w-full py-1 font-semibold rounded-lg cursor-pointer">
-                    Login with Facebook
-                </button>
-                <p className="my-3">OR</p>
+                <AuthButton text="Login with Facebook" />
+                <div className="w-full relative">
+                    <div className="border-b-2 border-gray-300 w-full my-6"></div>
+                    <p className="text-sm font-semibold text-gray-400 absolute p-2 bg-white right-1/2 top-1/2 transform -translate-y-1/2 translate-x-1/2">
+                        OR
+                    </p>
+                </div>
                 <InputAuth
                     type="text"
                     placeholder="Mobile Number"
@@ -106,12 +110,8 @@ function Register() {
                         })
                     }
                 />
-                <button
-                    className="bg-blue-500 text-white w-full py-1 font-semibold rounded-lg cursor-pointer"
-                    onClick={handleSubmit}
-                >
-                    Sign Up
-                </button>
+                <AuthButton text="Sign Up" onClick={handleSubmit} />
+
                 <p className="text-xs text-gray-500 my-3 text-center">
                     People who use our service may have uploaded your contact
                     information to Instagram.
@@ -121,12 +121,12 @@ function Register() {
                     Cookies Policy.
                 </p>
             </div>
-            <div className="flex flex-col items-center w-96 border border-gray-300 p-4 mt-4">
-                <p>Have an account?</p>
-                <Link to="/login" className="text-blue-500 font-semibold">
-                    Log in
-                </Link>
-            </div>
+            <Link
+                to="/login"
+                className="text-sm font-bold text-blue-500 absolute top-0 right-0 m-4 border-2 border-b-4 border-gray-300 rounded-2xl px-4 py-2"
+            >
+                LOGIN
+            </Link>
         </div>
     );
 }

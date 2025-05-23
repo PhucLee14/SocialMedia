@@ -13,7 +13,7 @@ function InputAuth({ type, placeholder, onChange }) {
                 px: 1.5,
                 width: "100%",
                 border: "1px solid #dbdbdb",
-                borderRadius: "4px",
+                borderRadius: "16px",
                 backgroundColor: "#ffffff",
                 fontSize: "0.875rem",
                 marginBottom: 1.5,

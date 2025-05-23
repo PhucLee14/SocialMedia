@@ -2,26 +2,28 @@ import React, { useState } from "react";
 import { Box } from "@mui/material";
 import AuthButton from "../components/Button/AuthButton";
 import InputAuth from "../components/InputAuth";
-import { Link, useNavigate } from "react-router-dom";
-import { forgotPassword } from "../services/authService";
-import LoadingDetail from "../components/Loading/LoadingDetail";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { resetPassword } from "../services/authService";
 
-function ForgotPassword() {
-    const [email, setEmail] = useState("");
-    const [loading, setLoading] = useState(false);
+function ResetPassword() {
+    const { token } = useParams();
     const nav = useNavigate();
-    const handleSendEmail = async () => {
+    const [newPassword, setNewPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
+
+    const handleResetPassword = async () => {
+        if (newPassword !== confirmPassword) {
+            return;
+        }
         try {
-            setLoading(true);
-            const data = email;
-            const result = await forgotPassword({ email: data });
-            setLoading(false);
-            nav("/forgotpassword/success");
+            const data = { newPassword };
+            const result = await resetPassword(token, data);
             console.log("result: ", result);
         } catch (error) {
             console.log(error);
         }
     };
+
     return (
         <Box>
             <Box
@@ -80,26 +82,42 @@ function ForgotPassword() {
                         fontSize={"22px"}
                         fontWeight={700}
                     >
-                        Forgot Password
+                        Reset Password
                     </Box>
                     <Box textAlign={"center"} my={3} fontWeight={500}>
-                        We will send you instructions on how to reset your
-                        password by email.
+                        Input your code to reset your password.
                     </Box>
                     <InputAuth
-                        onChange={(e) => setEmail(e.target.value)}
-                        placeholder={"Email"}
+                        placeholder={"Password"}
+                        type={"password"}
+                        onChange={(e) => setNewPassword(e.target.value)}
                     />
-                    <AuthButton text={"SUBMIT"} onClick={handleSendEmail} />
+                    <InputAuth
+                        placeholder={"Confirm password"}
+                        type={"password"}
+                        onChange={(e) => setConfirmPassword(e.target.value)}
+                    />
+                    {confirmPassword == "" ? (
+                        ""
+                    ) : (
+                        <Box
+                            fontSize={"12px"}
+                            color={"#FF0000"}
+                            mt={-1}
+                            display={
+                                newPassword !== confirmPassword
+                                    ? "block"
+                                    : "none"
+                            }
+                        >
+                            Your confirm password isn't fit with your password
+                        </Box>
+                    )}
+                    <AuthButton text={"SUBMIT"} onClick={handleResetPassword} />
                 </Box>
             </Box>
-            {loading && (
-                <Box>
-                    <LoadingDetail />
-                </Box>
-            )}
         </Box>
     );
 }
 
-export default ForgotPassword;
+export default ResetPassword;
