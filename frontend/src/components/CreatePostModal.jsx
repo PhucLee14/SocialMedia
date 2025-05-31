@@ -5,6 +5,7 @@ import { storage } from "../firebase";
 import { ref, getDownloadURL, uploadBytes } from "firebase/storage";
 import { getUser } from "../services/userService";
 import { createPost } from "../services/postService";
+import LoadingDetail from "./Loading/LoadingDetail";
 
 const postReducer = (state, action) => {
     switch (action.type) {
@@ -40,6 +41,8 @@ function CreatePostModal({ onClick }) {
     const [isAccessibility, setIsAccessibility] = useState(false);
     const [isAdvancedSettings, setIsAdvancedSettings] = useState(false);
     const [state, dispatch] = useReducer(postReducer, initialState);
+    const [currentImageIndex, setCurrentImageIndex] = useState(0);
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         const fetchUser = async () => {
@@ -73,54 +76,42 @@ function CreatePostModal({ onClick }) {
         e.preventDefault();
         const files = e.dataTransfer.files;
         setImagesObj(files);
-        console.log("imgobj: ", imagesObj);
         if (files.length === 0) return;
+
+        const newImages = [];
         for (let i = 0; i < files.length; i++) {
-            if (files[i].type.split("/")[0] !== "image") {
-                console.log(files[i]);
-                continue;
+            if (files[i].type.split("/")[0] !== "image") continue;
+            if (!image.some((e) => e.name === files[i].name)) {
+                newImages.push({
+                    img: files[i],
+                    name: files[i].name,
+                    url: URL.createObjectURL(files[i]),
+                });
             }
-            if (
-                !image.some((e) => {
-                    e.name === files[i].name;
-                })
-            ) {
-                setImage((prevImages) => [
-                    ...prevImages,
-                    {
-                        img: files[i],
-                        name: files[i].name,
-                        url: URL.createObjectURL(files[i]),
-                    },
-                ]);
-            }
+        }
+        if (newImages.length > 0) {
+            setImage((prevImages) => [...prevImages, ...newImages]);
         }
     };
 
     const onFileSelect = (e) => {
         const files = e.target.files;
         setImagesObj(files);
-        console.log("imgobj: ", imagesObj);
         if (files.length === 0) return;
+
+        const newImages = [];
         for (let i = 0; i < files.length; i++) {
-            if (files[i].type.split("/")[0] !== "image") {
-                console.log(files[i]);
-                continue;
+            if (files[i].type.split("/")[0] !== "image") continue;
+            if (!image.some((e) => e.name === files[i].name)) {
+                newImages.push({
+                    img: files[i],
+                    name: files[i].name,
+                    url: URL.createObjectURL(files[i]),
+                });
             }
-            if (
-                !image.some((e) => {
-                    e.name === files[i].name;
-                })
-            ) {
-                setImage((prevImages) => [
-                    ...prevImages,
-                    {
-                        img: files[i],
-                        name: files[i].name,
-                        url: URL.createObjectURL(files[i]),
-                    },
-                ]);
-            }
+        }
+        if (newImages.length > 0) {
+            setImage((prevImages) => [...prevImages, ...newImages]);
         }
     };
 
@@ -131,6 +122,7 @@ function CreatePostModal({ onClick }) {
     const handleSubmit = async () => {
         console.log(state);
         try {
+            setLoading(true);
             if (imagesObj) {
                 for (let i = 0; i < imagesObj.length; i++) {
                     const imageRef = ref(
@@ -159,6 +151,7 @@ function CreatePostModal({ onClick }) {
                 throw new Error(data.data.error);
             }
             console.log("data: ", data);
+            setLoading(false);
             location.reload();
         } catch (error) {
             console.log(error);
@@ -251,6 +244,7 @@ function CreatePostModal({ onClick }) {
                                 ref={inputRef}
                                 onChange={onFileSelect}
                                 accept="image/png, image/gif, image/jpeg, video/mp4,video/x-m4v,video/*"
+                                multiple
                             />
                             <Button
                                 variant="contained"
@@ -319,18 +313,104 @@ function CreatePostModal({ onClick }) {
                     >
                         <Box
                             sx={{
-                                // width: "100%",
                                 height: "100%",
+                                width: "600px",
                                 position: "relative",
+                                overflow: "hidden",
                             }}
                         >
-                            <img
-                                src={image[image.length - 1].url}
-                                style={{
-                                    width: "600px",
+                            <Box
+                                sx={{
+                                    display: "flex",
                                     height: "100%",
+                                    width: `${image.length * 100}%`,
+                                    transition:
+                                        "transform 0.3s cubic-bezier(0.4,0,0.2,1)",
+                                    transform: `translateX(-${
+                                        currentImageIndex * 600
+                                    }px)`,
                                 }}
-                            ></img>
+                            >
+                                {image.map((img, idx) => (
+                                    <img
+                                        key={idx}
+                                        src={img.url}
+                                        style={{
+                                            width: "600px",
+                                            height: "100%",
+                                            objectFit: "contain",
+                                            flexShrink: 0,
+                                            background: "#000",
+                                        }}
+                                        alt=""
+                                    />
+                                ))}
+                            </Box>
+                            {image.length > 1 &&
+                                currentImageIndex < image.length - 1 && (
+                                    <Box
+                                        sx={{
+                                            position: "absolute",
+                                            top: "50%",
+                                            right: 10,
+                                            transform: "translateY(-50%)",
+                                            zIndex: 2,
+                                        }}
+                                    >
+                                        <button
+                                            onClick={() =>
+                                                setCurrentImageIndex((prev) =>
+                                                    prev < image.length - 1
+                                                        ? prev + 1
+                                                        : prev
+                                                )
+                                            }
+                                            style={{
+                                                background: "#fff",
+                                                border: "none",
+                                                borderRadius: "50%",
+                                                width: 24,
+                                                height: 24,
+                                                cursor: "pointer",
+                                                fontWeight: "bold",
+                                                opacity: 0.6,
+                                            }}
+                                        >
+                                            <i className="fa-solid fa-chevron-left fa-rotate-180"></i>
+                                        </button>
+                                    </Box>
+                                )}
+                            {image.length > 1 && currentImageIndex > 0 && (
+                                <Box
+                                    sx={{
+                                        position: "absolute",
+                                        top: "50%",
+                                        left: 10,
+                                        transform: "translateY(-50%)",
+                                        zIndex: 2,
+                                    }}
+                                >
+                                    <button
+                                        onClick={() =>
+                                            setCurrentImageIndex((prev) =>
+                                                prev > 0 ? prev - 1 : prev
+                                            )
+                                        }
+                                        style={{
+                                            background: "#fff",
+                                            border: "none",
+                                            borderRadius: "50%",
+                                            width: 24,
+                                            height: 24,
+                                            cursor: "pointer",
+                                            fontWeight: "bold",
+                                            opacity: 0.6,
+                                        }}
+                                    >
+                                        <i className="fa-solid fa-chevron-left"></i>
+                                    </button>
+                                </Box>
+                            )}
                         </Box>
                         <Box
                             sx={{
@@ -618,6 +698,7 @@ function CreatePostModal({ onClick }) {
             ) : (
                 ""
             )}
+            {loading && <LoadingDetail />}
         </Box>
     );
 }

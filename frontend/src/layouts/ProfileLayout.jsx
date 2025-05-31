@@ -4,12 +4,16 @@ import DefaultLayout from "./DefaultLayout";
 import { Link, useParams } from "react-router-dom";
 import { followUser, getUserByUserName } from "../services/userService";
 import { getPostByUserId } from "../services/postService";
+import FollowingListModal from "../components/Modal/FollowingListModal";
+import FollowerListModal from "../components/Modal/FollowerListModal";
 
 function ProfileLayout({ children }) {
     const me = JSON.parse(localStorage.getItem("user"));
     const param = useParams();
     const [user, setUser] = useState(null);
     const [isFollowing, setIsFollowing] = useState(false);
+    const [followingList, setFollowingList] = useState(false);
+    const [followersList, setFollowersList] = useState(false);
 
     useEffect(() => {
         const getUser = async () => {
@@ -211,6 +215,10 @@ function ProfileLayout({ children }) {
                                     fontWeight: "600",
                                     display: "flex",
                                     marginX: "2.5rem",
+                                    cursor: "pointer",
+                                }}
+                                onClick={() => {
+                                    setFollowersList(true);
                                 }}
                             >
                                 <p>{user.followers.length}</p>
@@ -228,6 +236,10 @@ function ProfileLayout({ children }) {
                                 sx={{
                                     fontWeight: "600",
                                     display: "flex",
+                                    cursor: "pointer",
+                                }}
+                                onClick={() => {
+                                    setFollowingList(true);
                                 }}
                             >
                                 <p>{user.following.length}</p>
@@ -288,6 +300,28 @@ function ProfileLayout({ children }) {
                 </Box>
                 {children}
             </Box>
+            {followingList ? (
+                <FollowingListModal
+                    user={user}
+                    onClick={() => {
+                        setFollowingList(false);
+                    }}
+                    followingList={user.following}
+                />
+            ) : (
+                ""
+            )}
+            {followersList ? (
+                <FollowerListModal
+                    user={user}
+                    onClick={() => {
+                        setFollowersList(false);
+                    }}
+                    followerList={user.followers}
+                />
+            ) : (
+                ""
+            )}
         </Box>
     ) : (
         ""

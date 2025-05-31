@@ -4,7 +4,7 @@ import ReactDOM from "react-dom";
 import { Link } from "react-router-dom";
 import MenuField from "../MenuField";
 
-function PostMenuModal({ onClick, link, userName }) {
+function PostMenuModal({ onClick, link, userId }) {
     const user = JSON.parse(localStorage.getItem("user"));
     const handleCopy = () => {
         navigator.clipboard.writeText(`localhost:3001/${link}`);
@@ -44,12 +44,23 @@ function PostMenuModal({ onClick, link, userName }) {
                 width={"400px"}
                 borderRadius={"16px"}
             >
-                <>
-                    <MenuField text="Report" isRed={true} />
-                    <MenuField text="Unfollow" isRed={true} />
-
-                    <MenuField text="Add to favorites" isRed={false} />
-                </>
+                {user._id == userId ? (
+                    <>
+                        <MenuField text="Delete" isRed={true} />
+                        <MenuField text="Edit" isRed={false} />
+                        <MenuField
+                            text="Hide like count to others"
+                            isRed={false}
+                        />
+                        <MenuField text="Turn off commenting" isRed={false} />
+                    </>
+                ) : (
+                    <>
+                        <MenuField text="Report" isRed={true} />
+                        <MenuField text="Unfollow" isRed={true} />
+                        <MenuField text="Add to favorites" isRed={false} />
+                    </>
+                )}
                 <MenuField
                     text="Go to post"
                     isRed={false}

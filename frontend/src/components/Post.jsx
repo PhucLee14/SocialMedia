@@ -18,6 +18,7 @@ function Post({ id, isLiked, isSaved, onClickLike, onClickSave, countLikes }) {
     const [loading, setLoading] = useState(true);
     const [detailPost, setDetailPost] = useState(null);
     const [postMenu, setPostMenu] = useState(false);
+    const [currentMediaIndex, setCurrentMediaIndex] = useState(0);
 
     //Get post
     useEffect(() => {
@@ -128,26 +129,110 @@ function Post({ id, isLiked, isSaved, onClickLike, onClickSave, countLikes }) {
                     <i class="fa-solid fa-ellipsis-vertical fa-rotate-90"></i>
                 </Box>
             </Box>
-            <Box sx={{}}>
-                {post.medias.map((media) => (
-                    <Box
-                        sx={{
-                            backgroundColor: "#000",
-                            width: "468px",
-                            height: "585px",
-                            display: "flex",
-                            justifyContent: "center",
-                        }}
-                    >
+            <Box
+                sx={{
+                    backgroundColor: "#000",
+                    width: "468px",
+                    height: "585px",
+                    overflow: "hidden",
+                    position: "relative",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                }}
+            >
+                <Box
+                    sx={{
+                        display: "flex",
+                        height: "100%",
+                        width: `${post.medias.length * 100}%`,
+                        transition: "transform 0.3s cubic-bezier(0.4,0,0.2,1)",
+                        transform: `translateX(-${currentMediaIndex * 100}%)`,
+                    }}
+                >
+                    {post.medias.map((media, idx) => (
                         <img
-                            style={{
-                                //   width: "468px",
-                                height: "100%",
-                            }}
+                            key={idx}
                             src={media}
+                            alt=""
+                            style={{
+                                width: "100%",
+                                height: "100%",
+                                objectFit: "contain",
+                                flexShrink: 0,
+                                background: "#000",
+                            }}
                         />
-                    </Box>
-                ))}
+                    ))}
+                </Box>
+                {post.medias.length > 1 && (
+                    <>
+                        {currentMediaIndex < post.medias.length - 1 && (
+                            <Box
+                                sx={{
+                                    position: "absolute",
+                                    top: "50%",
+                                    right: 10,
+                                    transform: "translateY(-50%)",
+                                    zIndex: 2,
+                                }}
+                            >
+                                <button
+                                    onClick={() =>
+                                        setCurrentMediaIndex((prev) =>
+                                            prev < post.medias.length - 1
+                                                ? prev + 1
+                                                : prev
+                                        )
+                                    }
+                                    style={{
+                                        background: "#fff",
+                                        border: "none",
+                                        borderRadius: "50%",
+                                        width: 24,
+                                        height: 24,
+                                        cursor: "pointer",
+                                        fontWeight: "bold",
+                                        opacity: 0.6,
+                                    }}
+                                >
+                                    <i className="fa-solid fa-chevron-left fa-rotate-180"></i>
+                                </button>
+                            </Box>
+                        )}
+                        {currentMediaIndex > 0 && (
+                            <Box
+                                sx={{
+                                    position: "absolute",
+                                    top: "50%",
+                                    left: 10,
+                                    transform: "translateY(-50%)",
+                                    zIndex: 2,
+                                }}
+                            >
+                                <button
+                                    onClick={() =>
+                                        setCurrentMediaIndex((prev) =>
+                                            prev > 0 ? prev - 1 : prev
+                                        )
+                                    }
+                                    style={{
+                                        background: "#fff",
+                                        border: "none",
+                                        borderRadius: "50%",
+                                        width: 24,
+                                        height: 24,
+                                        cursor: "pointer",
+                                        fontWeight: "bold",
+                                        opacity: 0.6,
+                                    }}
+                                >
+                                    <i className="fa-solid fa-chevron-left"></i>
+                                </button>
+                            </Box>
+                        )}
+                    </>
+                )}
             </Box>
             <Box>
                 <Box
@@ -246,8 +331,12 @@ function Post({ id, isLiked, isSaved, onClickLike, onClickSave, countLikes }) {
             )}
             {postMenu && (
                 <PostMenuModal
-                    onClick={() => setPostMenu(false)}
+                    onClick={() => {
+                        console.log(user._id);
+                        setPostMenu(false);
+                    }}
                     link={`${user.userName}/${post._id}`}
+                    userId={user._id}
                 />
             )}
         </Box>

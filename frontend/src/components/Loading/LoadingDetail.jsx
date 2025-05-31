@@ -13,6 +13,7 @@ function LoadingDetail() {
             alignItems="center"
             backgroundColor="rgba(0, 0, 0, 0.7)"
             // opacity={0.9}
+            zIndex={1000}
         >
             <CircularProgress />
         </Box>
