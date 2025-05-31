@@ -12,6 +12,10 @@ export const logout = () => {
     return api.post(`/api/auth/logout`);
 };
 
+export const verifyOtp = (data) => {
+    return api.post(`/api/auth/verify-otp`, data);
+};
+
 export const forgotPassword = (data) => {
     return api.post(`/api/auth/forgot-password`, data);
 };

@@ -8,12 +8,13 @@ function PostPreview({ post, onClick, link }) {
         <Box sx={{ width: "calc(100% / 3)", position: "relative" }}>
             <Box
                 sx={{
-                    width: "95%",
+                    width: "98%",
                     height: "410px",
                     background: `url(${post.medias[0]})`,
                     backgroundSize: "cover",
                     backgroundRepeat: "no-repeat",
                     cursor: "pointer",
+                    marginBottom: "6px",
                 }}
                 onMouseEnter={() => setDisplay(true)}
                 onMouseLeave={() => setDisplay(false)}
@@ -23,15 +24,16 @@ function PostPreview({ post, onClick, link }) {
                     position: "absolute",
                     top: "0",
                     background: "rgba(0,0,0,0.3)",
-                    width: "95%",
-                    height: "100%",
+                    width: "98%",
+                    height: "410px",
                     display: display ? "flex" : "none",
                     justifyContent: "center",
                     alignItems: "center",
                     color: "white",
                     cursor: "pointer",
-                    gap: "20px",
+                    gap: "8px",
                     fontWeight: "600",
+                    marginBottom: "6px",
                 }}
                 onMouseEnter={() => setDisplay(true)}
                 onMouseLeave={() => setDisplay(false)}

@@ -36,11 +36,8 @@ function Register() {
     const handleSubmit = async () => {
         try {
             const data = await register(state);
-            if (data.status === 400) {
-                toast.error(data.data.error);
-                throw new Error(data.data.error);
-            }
-            nav("/");
+            console.log("data: ", data);
+            nav(`/verify-email?email=${initialState.email}`);
             localStorage.setItem("user", JSON.stringify(data));
         } catch (error) {
             console.log(error);

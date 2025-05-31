@@ -27,9 +27,7 @@ const register = async (req, res) => {
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
 
-        const verificationCode = Math.floor(
-            100000 + Math.random() * 900000
-        ).toString();
+        const otpCode = Math.floor(100000 + Math.random() * 900000).toString();
 
         const defaultPic =
             "https://i.pinimg.com/736x/a0/4d/84/a04d849cf591c2f980548b982f461401.jpg";
@@ -41,28 +39,39 @@ const register = async (req, res) => {
             password: hashedPassword,
             fullName,
             profilePicture: defaultPic,
-            verificationCode,
+            otpCode,
+            otpExpires: Date.now() + 5 * 60 * 1000, // 5 phút
+            isVerified: false,
         });
 
         await newUser.save();
 
-        const { accessToken, refreshToken } = await generateTokenAndSetCookie(
-            newUser._id,
-            res
-        );
+        // Gửi OTP qua email
+        const transporter = nodemailer.createTransport({
+            service: "gmail",
+            auth: {
+                user: process.env.EMAIL_USER,
+                pass: process.env.EMAIL_PASS,
+            },
+        });
+
+        await transporter.sendMail({
+            from: process.env.EMAIL_USER,
+            to: newUser.email,
+            subject: "Your OTP Code",
+            html: `
+                <p>Hi ${newUser.fullName},</p>
+                <p>Your OTP code is: <strong>${otpCode}</strong></p>
+                <p>This code will expire in 5 minutes.</p>
+            `,
+        });
 
         return res.status(201).json({
-            _id: newUser._id,
-            userName: newUser.userName,
-            email: newUser.email,
-            phoneNumber: newUser.phoneNumber,
-            fullName: newUser.fullName,
-            profilePicture: newUser.profilePicture,
-            accessToken,
-            refreshToken,
+            message: "User registered successfully. OTP sent to email.",
+            email: newUser.email, // frontend sẽ dùng để chuyển hướng
         });
     } catch (error) {
-        console.log("Error in signup controller", error.message);
+        console.log("Error in register controller", error.message);
         res.status(500).json({ error: "Internal Server Error" });
     }
 };
@@ -151,6 +160,29 @@ const setRefreshToken = async (req, res) => {
         res.json({ success: true });
     } catch (err) {
         res.status(403).json({ message: "Token verification failed" });
+    }
+};
+
+const verifyOtp = async (req, res) => {
+    const { email, otp } = req.body;
+
+    const user = await User.findOne({ email });
+
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    if (
+        user.otpCode === otp &&
+        user.otpExpires &&
+        user.otpExpires > Date.now()
+    ) {
+        user.isVerified = true;
+        user.otpCode = undefined;
+        user.otpExpires = undefined;
+        await user.save();
+
+        return res.json({ message: "Email verified successfully" });
+    } else {
+        return res.status(400).json({ message: "Invalid or expired OTP" });
     }
 };
 
@@ -249,6 +281,7 @@ export {
     login,
     logout,
     setRefreshToken,
+    verifyOtp,
     forgotPassword,
     resetPassword,
 };

@@ -17,6 +17,8 @@ function PostDetailModal({ post, onClick }) {
     const [author, setAuthor] = useState(null);
     const [likedPosts, setLikedPosts] = useState(null);
     const [savedPosts, setSavedPosts] = useState(null);
+    const [currentMediaIndex, setCurrentMediaIndex] = useState(0);
+
     useEffect(() => {
         const getAuthor = async () => {
             try {
@@ -130,16 +132,104 @@ function PostDetailModal({ post, onClick }) {
                         bgcolor: "#000",
                         display: "flex",
                         alignItems: "center",
+                        position: "relative",
+                        overflow: "hidden",
+                        width: "770px",
                     }}
                 >
-                    {post.medias.map((media, index) => (
-                        <img
-                            key={index}
-                            src={media}
-                            alt={`Post media ${index}`}
-                            style={{ width: "100%", maxHeight: "100%" }}
-                        />
-                    ))}
+                    <Box
+                        sx={{
+                            display: "flex",
+                            height: "100%",
+                            width: `${post.medias.length * 100}%`,
+                            transition:
+                                "transform 0.3s cubic-bezier(0.4,0,0.2,1)",
+                            transform: `translateX(-${
+                                currentMediaIndex * 770
+                            }px)`,
+                        }}
+                    >
+                        {post.medias.map((media, index) => (
+                            <img
+                                key={index}
+                                src={media}
+                                alt={`Post media ${index}`}
+                                style={{
+                                    width: "770px",
+                                    height: "100%",
+                                    objectFit: "contain",
+                                    flexShrink: 0,
+                                    background: "#000",
+                                }}
+                            />
+                        ))}
+                    </Box>
+                    {/* Nút chuyển ảnh */}
+                    {post.medias.length > 1 && currentMediaIndex > 0 && (
+                        <Box
+                            sx={{
+                                position: "absolute",
+                                top: "50%",
+                                left: 10,
+                                transform: "translateY(-50%)",
+                                zIndex: 2,
+                            }}
+                        >
+                            <button
+                                onClick={() =>
+                                    setCurrentMediaIndex((prev) =>
+                                        prev > 0 ? prev - 1 : prev
+                                    )
+                                }
+                                style={{
+                                    background: "#fff",
+                                    border: "none",
+                                    borderRadius: "50%",
+                                    width: 32,
+                                    height: 32,
+                                    cursor: "pointer",
+                                    fontWeight: "bold",
+                                    opacity: 0.6,
+                                }}
+                            >
+                                <i className="fa-solid fa-chevron-left"></i>
+                            </button>
+                        </Box>
+                    )}
+                    {post.medias.length > 1 &&
+                        currentMediaIndex < post.medias.length - 1 && (
+                            <Box
+                                sx={{
+                                    position: "absolute",
+                                    top: "50%",
+                                    right: 10,
+                                    transform: "translateY(-50%)",
+                                    zIndex: 2,
+                                }}
+                            >
+                                <button
+                                    onClick={() =>
+                                        setCurrentMediaIndex((prev) =>
+                                            prev < post.medias.length - 1
+                                                ? prev + 1
+                                                : prev
+                                        )
+                                    }
+                                    style={{
+                                        background: "#fff",
+                                        border: "none",
+                                        borderRadius: "50%",
+                                        width: 32,
+                                        height: 32,
+                                        cursor: "pointer",
+                                        fontWeight: "bold",
+                                        opacity: 0.6,
+                                    }}
+                                >
+                                    <i className="fa-solid fa-chevron-left fa-rotate-180"></i>
+                                </button>
+                            </Box>
+                        )}
                 </Box>
                 {author ? (
                     <Box sx={{ width: "500px", height: "100%" }}>

@@ -17,10 +17,12 @@ import PostDetail from "../pages/PostDetail";
 import DefaultLayout from "../layouts/DefaultLayout";
 import ResetPassword from "../pages/ResetPassword";
 import SendMailSuccess from "../pages/SendMailSuccess";
+import Verify from "../pages/Verify";
 
 const publicRoutes = [
     { path: "/login", component: Login, layout: null },
     { path: "/register", component: Register, layout: null },
+    { path: "/verify-email", component: Verify, layout: null },
     { path: "/forgotpassword", component: ForgotPassword, layout: null },
     {
         path: "/forgotpassword/success",

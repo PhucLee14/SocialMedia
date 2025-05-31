@@ -46,6 +46,8 @@ const userModel = Schema(
             type: Boolean,
             default: false,
         },
+        otpCode: { type: String },
+        otpExpires: { type: Date },
         resetPasswordToken: {
             type: String,
         },

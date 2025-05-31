@@ -47,17 +47,20 @@ function Profile() {
     };
     return posts.length > 0 ? (
         <>
-            <Box sx={{ display: "flex", width: "940px" }}>
-                {posts.map((post) => (
-                    <PostPreview
-                        post={post}
-                        onClick={(e) => {
-                            e.preventDefault();
-                            handleGetPost(post._id);
-                        }}
-                        link={`/${user.userName}/${post._id}`}
-                    />
-                ))}
+            <Box sx={{ display: "flex", width: "940px", flexWrap: "wrap" }}>
+                {posts
+                    .slice()
+                    .reverse()
+                    .map((post) => (
+                        <PostPreview
+                            post={post}
+                            onClick={(e) => {
+                                e.preventDefault();
+                                handleGetPost(post._id);
+                            }}
+                            link={`/${user.userName}/${post._id}`}
+                        />
+                    ))}
             </Box>
             {detailPost && (
                 <PostDetailModal
