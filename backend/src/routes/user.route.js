@@ -2,6 +2,7 @@ import express from "express";
 import {
     editProfile,
     followUser,
+    getAllUsers,
     getUser,
     getUserByID,
     getUserByUsername,
@@ -14,6 +15,8 @@ import { protect } from "../middleware/authMiddleware.js";
 const route = express.Router();
 
 route.get("/", protect, getUser);
+
+route.get("/users", getAllUsers);
 
 route.get("/getUserForSidebar", protect, getUserForSidebar);
 

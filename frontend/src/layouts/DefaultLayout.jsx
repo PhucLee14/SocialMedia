@@ -175,9 +175,17 @@ function DefaultLayout({ children }) {
                             anchorEl={menuAnchor}
                             open={Boolean(menuAnchor)}
                             onClose={handleMenuClose}
+                            sx={{ borderRadius: "12px", padding: "10px" }}
                         >
-                            <MenuItem>Item 1</MenuItem>
-                            <MenuItem onClick={handleLogout}>Log out</MenuItem>
+                            {/* <MenuItem>Item 1</MenuItem> */}
+                            <MenuItem
+                                sx={{
+                                    width: "200px",
+                                }}
+                                onClick={handleLogout}
+                            >
+                                Log out
+                            </MenuItem>
                         </Menu>
                     </Box>
                 </Box>

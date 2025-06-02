@@ -1,17 +1,27 @@
 import React, { useEffect, useState } from "react";
 import { Box } from "@mui/material";
-import { getUser, postLiked, postSaved } from "../services/userService";
+import {
+    getUser,
+    getUserById,
+    postLiked,
+    postSaved,
+} from "../services/userService";
 import { Link } from "react-router-dom";
 import { getPosts, likePost, savePost } from "../services/postService";
 import Post from "../components/Post";
+import StorySlide from "../components/Story/StorySlide";
+import Suggestion from "../components/Suggestion/Suggestion";
+import SwitchAcccountModal from "../components/Modal/SwitchAcccountModal";
 
 function Home() {
+    const me = JSON.parse(localStorage.getItem("user"));
     const [user, setUser] = useState(null);
     const [posts, setPosts] = useState(null);
     const [likedPosts, setLikedPosts] = useState({});
     const [savedPosts, setSavedPosts] = useState({});
+    const [following, setFollowing] = useState([]);
+    const [modalSwitch, setModalSwitch] = useState(false);
 
-    //Get posts
     useEffect(() => {
         const fetchPosts = async () => {
             try {
@@ -21,12 +31,6 @@ function Home() {
                 console.error("Failed to fetch post:", error);
             }
         };
-
-        fetchPosts();
-    }, []);
-
-    //Get users
-    useEffect(() => {
         const fetchUsers = async () => {
             try {
                 const data = await getUser();
@@ -35,8 +39,18 @@ function Home() {
                 console.error("Failed to fetch user:", error);
             }
         };
+        const fetchFollowing = async () => {
+            try {
+                const data = await getUserById(me._id);
+                setFollowing(data.following);
+            } catch (error) {
+                console.error("Failed to fetch following:", error);
+            }
+        };
 
         fetchUsers();
+        fetchPosts();
+        fetchFollowing();
     }, []);
 
     useEffect(() => {
@@ -97,7 +111,7 @@ function Home() {
         }
     };
 
-    return user ? (
+    return user && posts ? (
         <Box
             sx={{
                 display: "flex",
@@ -105,65 +119,112 @@ function Home() {
                 alignItems: "start",
             }}
         >
-            <Box sx={{ width: 630 }}>
-                {posts
-                    ? posts
-                          .map((post) => (
-                              <Post
-                                  key={post._id}
-                                  id={post._id}
-                                  isLiked={likedPosts[post._id]?.isLiked}
-                                  isSaved={savedPosts[post._id]}
-                                  onClickLike={() => handleLikePost(post)}
-                                  onClickSave={() => handleSavePost(post)}
-                                  countLikes={likedPosts[post._id]?.countLikes}
-                              />
-                          ))
-                          .reverse()
-                    : ""}
-            </Box>
-            <Box
-                sx={{
-                    width: 320,
-                    pl: "64px",
-                    mt: "36px",
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    position: "relative",
-                    top: "0",
-                }}
-            >
-                <Box sx={{ display: "flex", justifyContent: "start" }}>
-                    <Link to={`/${user.userName}`}>
-                        <img
-                            src={user.profilePicture}
-                            alt=""
-                            style={{
-                                width: 45,
-                                height: 45,
-                                marginRight: "12px",
-                                borderRadius: "50%",
-                            }}
-                        />
-                    </Link>
-                    <Box sx={{ fontSize: "14px" }}>
-                        <Link to={`/${user.userName}`}>
-                            <Box sx={{ fontWeight: 600 }}>{user.userName}</Box>
-                        </Link>
-                        <Box sx={{ color: "#999" }}>{user.fullName}</Box>
-                    </Box>
+            <Box display={"flex"} flexDirection={"column"}>
+                <Box justifySelf={"start"} sx={{ width: 630 }}>
+                    <StorySlide />
                 </Box>
+                <Box sx={{ width: 630 }}>
+                    {posts && posts.length > 0 ? (
+                        (() => {
+                            const filteredPosts = posts.filter((post) =>
+                                following.includes(post.author)
+                            );
+                            return filteredPosts.length > 0 ? (
+                                filteredPosts
+                                    .map((post) => (
+                                        <Post
+                                            key={post._id}
+                                            id={post._id}
+                                            isLiked={
+                                                likedPosts[post._id]?.isLiked
+                                            }
+                                            isSaved={savedPosts[post._id]}
+                                            onClickLike={() =>
+                                                handleLikePost(post)
+                                            }
+                                            onClickSave={() =>
+                                                handleSavePost(post)
+                                            }
+                                            countLikes={
+                                                likedPosts[post._id]?.countLikes
+                                            }
+                                        />
+                                    ))
+                                    .reverse()
+                            ) : (
+                                <Box
+                                    sx={{
+                                        textAlign: "center",
+                                        mt: 4,
+                                        color: "#888",
+                                    }}
+                                >
+                                    No content
+                                </Box>
+                            );
+                        })()
+                    ) : (
+                        <Box sx={{ textAlign: "center", mt: 4, color: "#888" }}>
+                            No content
+                        </Box>
+                    )}
+                </Box>
+            </Box>
+            <Box display={"flex"} flexDirection={"column"} width={320}>
                 <Box
                     sx={{
-                        fontSize: "12px",
-                        fontWeight: 600,
-                        color: "#0095F6",
-                        cursor: "pointer",
+                        width: "100%",
+                        ml: "64px",
+                        mt: "36px",
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        position: "relative",
+                        top: "0",
                     }}
                 >
-                    Switch
+                    <Box sx={{ display: "flex", justifyContent: "start" }}>
+                        <Link to={`/${user.userName}`}>
+                            <img
+                                src={user.profilePicture}
+                                alt=""
+                                style={{
+                                    width: 45,
+                                    height: 45,
+                                    marginRight: "12px",
+                                    borderRadius: "50%",
+                                }}
+                            />
+                        </Link>
+                        <Box sx={{ fontSize: "14px" }}>
+                            <Link to={`/${user.userName}`}>
+                                <Box sx={{ fontWeight: 600 }}>
+                                    {user.userName}
+                                </Box>
+                            </Link>
+                            <Box sx={{ color: "#999" }}>{user.fullName}</Box>
+                        </Box>
+                    </Box>
+                    <Box
+                        sx={{
+                            fontSize: "12px",
+                            fontWeight: 600,
+                            color: "#0095F6",
+                            cursor: "pointer",
+                        }}
+                        onClick={() => setModalSwitch(true)}
+                    >
+                        Switch
+                    </Box>
                 </Box>
+                <Suggestion />
+                {modalSwitch && (
+                    <SwitchAcccountModal
+                        onClick={() => {
+                            setModalSwitch(false);
+                        }}
+                    />
+                )}
             </Box>
         </Box>
     ) : (

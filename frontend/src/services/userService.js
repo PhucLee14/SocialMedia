@@ -4,6 +4,10 @@ export const getUser = () => {
     return api.get(`/api/user`);
 };
 
+export const getAllUsers = () => {
+    return api.get(`/api/user/users`);
+};
+
 export const getUserByUserName = (userName) => {
     return api.get(`/api/user/u/${userName}`);
 };

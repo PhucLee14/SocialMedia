@@ -5,6 +5,16 @@ const getUser = async (req, res) => {
     return res.status(200).json(req.user);
 };
 
+const getAllUsers = async (req, res) => {
+    try {
+        const users = await User.find().select("-password");
+        return res.status(200).json(users);
+    } catch (error) {
+        console.error("Error fetching users:", error);
+        return res.status(500).json({ error: "Internal server error" });
+    }
+};
+
 const getUserByID = async (req, res) => {
     const id = req.params.id;
     const user = await User.findById(id);
@@ -162,6 +172,7 @@ const followUser = async (req, res) => {
 
 export {
     getUser,
+    getAllUsers,
     getUserByID,
     getUserByUsername,
     editProfile,
