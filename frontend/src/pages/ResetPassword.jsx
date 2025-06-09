@@ -4,12 +4,14 @@ import AuthButton from "../components/Button/AuthButton";
 import InputAuth from "../components/InputAuth";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { resetPassword } from "../services/authService";
+import LoadingDetail from "../components/Loading/LoadingDetail";
 
 function ResetPassword() {
     const { token } = useParams();
     const nav = useNavigate();
     const [newPassword, setNewPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
+    const [loading, setLoading] = useState(false);
 
     const handleResetPassword = async () => {
         if (newPassword !== confirmPassword) {
@@ -18,7 +20,10 @@ function ResetPassword() {
         try {
             const data = { newPassword };
             const result = await resetPassword(token, data);
-            console.log("result: ", result);
+            setLoading(true);
+            setInterval(() => {
+                nav("/login");
+            }, 3000);
         } catch (error) {
             console.log(error);
         }
@@ -116,6 +121,7 @@ function ResetPassword() {
                     <AuthButton text={"SUBMIT"} onClick={handleResetPassword} />
                 </Box>
             </Box>
+            {loading && <LoadingDetail />}
         </Box>
     );
 }

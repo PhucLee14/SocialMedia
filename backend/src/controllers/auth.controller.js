@@ -80,7 +80,9 @@ const login = async (req, res) => {
     try {
         const { userName, password } = req.body;
 
-        const user = await User.findOne({ userName });
+        const user = await User.findOne({
+            $or: [{ userName: userName }, { email: userName }],
+        });
         const isMatch = await bcrypt.compare(password, user?.password || "");
 
         if (!user || !isMatch) {

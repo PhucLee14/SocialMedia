@@ -47,6 +47,9 @@ function Login() {
             console.log(error);
         }
     };
+    const handleFacebookLogin = () => {
+        window.location.href = "http://localhost:3000/api/auth/facebook";
+    };
 
     return (
         <div className="flex flex-col justify-center items-center h-screen">
@@ -79,7 +82,10 @@ function Login() {
                         OR
                     </p>
                 </div>
-                <button className="text-blue-500 w-full font-semibold rounded-lg cursor-pointer">
+                <button
+                    className="text-blue-500 w-full font-semibold rounded-lg cursor-pointer"
+                    onClick={handleFacebookLogin}
+                >
                     Login with Facebook
                 </button>
                 <Link to="/forgotpassword" className="text-sm mt-4">

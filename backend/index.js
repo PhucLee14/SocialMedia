@@ -1,5 +1,8 @@
 import express from "express";
 import dotenv from "dotenv";
+dotenv.config();
+const app = express();
+
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import http from "http";
@@ -11,9 +14,6 @@ import commentRoute from "./src/routes/comment.route.js";
 import mailRoute from "./src/routes/mail.route.js";
 import connectToMongoDb from "./src/config/connectToMongoDB.js";
 import initializeSocket from "./src/socket/socket.js";
-const app = express();
-dotenv.config();
-
 const PORT = process.env.PORT || 3000;
 const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:3001";
 
