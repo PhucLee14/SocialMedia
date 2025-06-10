@@ -1,5 +1,6 @@
 import express from "express";
 import {
+    facebookLogin,
     forgotPassword,
     login,
     logout,
@@ -18,5 +19,6 @@ router.post("/refresh-token", setRefreshToken);
 router.post("/forgot-password", forgotPassword);
 router.post("/reset-password/:token", resetPassword);
 router.post("/verify-otp", verifyOtp);
+router.post("/facebook", facebookLogin);
 
 export default router;

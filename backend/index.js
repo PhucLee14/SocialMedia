@@ -14,6 +14,8 @@ import commentRoute from "./src/routes/comment.route.js";
 import mailRoute from "./src/routes/mail.route.js";
 import connectToMongoDb from "./src/config/connectToMongoDB.js";
 import initializeSocket from "./src/socket/socket.js";
+import passport from "./src/config/passport.js";
+
 const PORT = process.env.PORT || 3000;
 const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:3001";
 
@@ -25,6 +27,8 @@ app.use(
     })
 );
 app.use(cookieParser());
+
+app.use(passport.initialize());
 
 app.get("/", (req, res) => {
     res.send("Hello World");

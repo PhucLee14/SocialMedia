@@ -4,7 +4,9 @@ const userModel = Schema(
     {
         userName: {
             type: String,
-            required: true,
+            required: function () {
+                return !this.facebookId; // Không bắt buộc nếu đăng nhập bằng Facebook
+            },
         },
         email: {
             type: String,
@@ -12,7 +14,9 @@ const userModel = Schema(
         },
         phoneNumber: {
             type: String,
-            required: true,
+            required: function () {
+                return !this.facebookId; // Không bắt buộc nếu đăng nhập bằng Facebook
+            },
         },
         fullName: {
             type: String,
@@ -20,7 +24,9 @@ const userModel = Schema(
         },
         password: {
             type: String,
-            required: true,
+            required: function () {
+                return !this.facebookId; // Không bắt buộc nếu đăng nhập bằng Facebook
+            },
         },
         profilePicture: {
             type: String,
@@ -53,6 +59,16 @@ const userModel = Schema(
         },
         resetPasswordExpires: {
             type: Date,
+        },
+        facebookId: {
+            type: String,
+            unique: true,
+            sparse: true, // Cho phép null
+        },
+        loginProvider: {
+            type: String,
+            enum: ["local", "facebook"],
+            default: "local",
         },
     },
     {

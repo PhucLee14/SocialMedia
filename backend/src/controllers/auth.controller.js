@@ -4,6 +4,8 @@ import generateTokenAndSetCookie from "../utils/generateToken.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import nodemailer from "nodemailer";
+import passport from "../config/passport.js";
+import axios from "axios";
 
 const register = async (req, res) => {
     try {
@@ -278,6 +280,55 @@ const resetPassword = async (req, res) => {
     }
 };
 
+const facebookLogin = async (req, res) => {
+    try {
+        const { accessToken } = req.body;
+        if (!accessToken) {
+            return res.status(400).json({ error: "Access token is required" });
+        }
+
+        let response = await axios.get(
+            `https://graph.facebook.com/me?access_token=${accessToken}&fields=id,name,email`
+        );
+        const { id, name, email } = response.data;
+        if (!id || !name || !email) {
+            return res.status(400).json({ error: "Invalid Facebook token" });
+        }
+        const account = await User.findOne({ facebookId: id });
+
+        if (!account) {
+            const newUser = new User({
+                userName: name,
+                email: email,
+                fullName: name,
+                facebookId: id,
+                profilePicture: `https://graph.facebook.com/${id}/picture?type=large`,
+            });
+            await newUser.save();
+            const { accessToken, refreshToken } =
+                await generateTokenAndSetCookie(newUser._id, res);
+            return res.status(201).json({
+                message: "User registered and logged in successfully",
+                user: newUser,
+                accessToken,
+                refreshToken,
+            });
+        } else {
+            const { accessToken, refreshToken } =
+                await generateTokenAndSetCookie(account._id, res);
+            return res.status(200).json({
+                message: "User logged in successfully",
+                user: account,
+                accessToken,
+                refreshToken,
+            });
+        }
+    } catch (error) {
+        console.log("Error in Facebook login controller", error.message);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+};
+
 export {
     register,
     login,
@@ -286,4 +337,5 @@ export {
     verifyOtp,
     forgotPassword,
     resetPassword,
+    facebookLogin,
 };

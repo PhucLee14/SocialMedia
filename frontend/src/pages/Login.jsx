@@ -1,11 +1,14 @@
-import React, { useReducer } from "react";
+import React, { useEffect, useReducer } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import InputAuth from "../components/InputAuth";
-import { login } from "../services/authService";
+import { facebookLogin, login } from "../services/authService";
 import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { setUserInfo } from "../redux/slices/userSlice";
 import AuthButton from "../components/Button/AuthButton";
+import FacebookLogin from "react-facebook-login";
+// import dotenv from "dotenv";
+// dotenv.config();
 
 const authReducer = (authState, action) => {
     switch (action.type) {
@@ -27,11 +30,36 @@ function Login() {
     const dispatch = useDispatch();
     const nav = useNavigate();
     const [authState, authDispatch] = useReducer(authReducer, initialState);
+    const fbId = "1212736950597008";
+
+    useEffect(() => {
+        const checkFbSdkLoaded = () => {
+            if (window.FB) {
+                window.FB.init({
+                    appId: "3925120877739639",
+                    cookie: true,
+                    xfbml: true,
+                    version: "v17.0",
+                });
+            } else {
+                setTimeout(checkFbSdkLoaded, 100);
+            }
+        };
+
+        checkFbSdkLoaded();
+    }, []);
+
     const handleSubmit = async () => {
         try {
             console.log(authState);
             const data = await login(authState);
             console.log("data: ", data);
+            const userToStore = {
+                _id: data._id,
+                userName: data.userName,
+                email: data.email,
+                profilePicture: data.profilePicture,
+            };
             if (data.status === 400) {
                 toast.error(data.data.error);
                 throw new Error(data.data.error);
@@ -39,7 +67,7 @@ function Login() {
             nav("/");
 
             const expiresAt = new Date().getTime() + 30 * 24 * 60 * 60 * 1000;
-            localStorage.setItem("user", JSON.stringify(data));
+            localStorage.setItem("user", JSON.stringify(userToStore));
             localStorage.setItem("expiresAt", expiresAt.toString());
 
             dispatch(setUserInfo(data));
@@ -47,8 +75,26 @@ function Login() {
             console.log(error);
         }
     };
-    const handleFacebookLogin = () => {
-        window.location.href = "http://localhost:3000/api/auth/facebook";
+    const handleFacebookLogin = () => {};
+
+    const handleResponseFacebookLogin = async (data) => {
+        try {
+            const result = await facebookLogin(data.accessToken);
+            if (result) {
+                nav("/");
+                console.log("result: ", result.user);
+                const userToStore = {
+                    _id: result.user._id,
+                    userName: result.user.userName,
+                    email: result.user.email,
+                    profilePicture: result.user.profilePicture,
+                };
+                localStorage.setItem("user", JSON.stringify(userToStore));
+                localStorage.setItem("expiresAt", expiresAt.toString());
+            }
+        } catch (error) {
+            console.log("error: ", error);
+        }
     };
 
     return (
@@ -86,6 +132,13 @@ function Login() {
                     className="text-blue-500 w-full font-semibold rounded-lg cursor-pointer"
                     onClick={handleFacebookLogin}
                 >
+                    <FacebookLogin
+                        appId={fbId}
+                        autoLoad={true}
+                        fields="name,email,picture"
+                        onClick={handleFacebookLogin}
+                        callback={handleResponseFacebookLogin}
+                    />
                     Login with Facebook
                 </button>
                 <Link to="/forgotpassword" className="text-sm mt-4">

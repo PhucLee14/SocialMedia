@@ -23,3 +23,7 @@ export const forgotPassword = (data) => {
 export const resetPassword = (token, data) => {
     return api.post(`/api/auth/reset-password/${token}`, data);
 };
+
+export const facebookLogin = (accessToken) => {
+    return api.post(`/api/auth/facebook`, { accessToken });
+};
