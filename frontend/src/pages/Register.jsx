@@ -1,9 +1,12 @@
 import React, { useReducer } from "react";
 import InputAuth from "../components/InputAuth";
 import { Link, useNavigate } from "react-router-dom";
-import { register } from "../services/authService";
+import { facebookLogin, register } from "../services/authService";
 import toast from "react-hot-toast";
 import AuthButton from "../components/Button/AuthButton";
+import FacebookLogin from "react-facebook-login";
+import { useRef } from "react";
+import { Box } from "@mui/material";
 
 const authReducer = (state, action) => {
     switch (action.type) {
@@ -33,6 +36,9 @@ const initialState = {
 function Register() {
     const nav = useNavigate();
     const [state, dispatch] = useReducer(authReducer, initialState);
+    const fbLoginRef = useRef();
+    const fbId = "1212736950597008";
+
     const handleSubmit = async () => {
         try {
             const data = await register(state);
@@ -43,6 +49,33 @@ function Register() {
             console.log(error);
         }
     };
+    const handleFacebookLogin = () => {};
+
+    const handleResponseFacebookLogin = async (data) => {
+        try {
+            const result = await facebookLogin(data.accessToken);
+            if (result) {
+                nav("/");
+                console.log("result: ", result.user);
+                const userToStore = {
+                    _id: result.user._id,
+                    userName: result.user.userName,
+                    email: result.user.email,
+                    profilePicture: result.user.profilePicture,
+                };
+                localStorage.setItem("user", JSON.stringify(userToStore));
+                localStorage.setItem("expiresAt", expiresAt.toString());
+            }
+        } catch (error) {
+            console.log("error: ", error);
+        }
+    };
+    const handleFacebookButtonClick = () => {
+        if (fbLoginRef.current) {
+            const btn = fbLoginRef.current.querySelector("button");
+            if (btn) btn.click();
+        }
+    };
     return (
         <div className="flex flex-col justify-center items-center relative">
             <div className="flex flex-col items-center w-96 p-10">
@@ -50,7 +83,19 @@ function Register() {
                 <p className="text-gray-500 text-sm font-semibold my-4 text-center">
                     Sign up to see photos and videos from your friends.
                 </p>
-                <AuthButton text="Login with Facebook" />
+                <AuthButton
+                    text="Login with Facebook"
+                    onClick={handleFacebookButtonClick}
+                />
+                <Box display="none" ref={fbLoginRef}>
+                    <FacebookLogin
+                        appId={fbId}
+                        autoLoad={true}
+                        fields="name,email,picture"
+                        onClick={handleFacebookLogin}
+                        callback={handleResponseFacebookLogin}
+                    />
+                </Box>
                 <div className="w-full relative">
                     <div className="border-b-2 border-gray-300 w-full my-6"></div>
                     <p className="text-sm font-semibold text-gray-400 absolute p-2 bg-white right-1/2 top-1/2 transform -translate-y-1/2 translate-x-1/2">

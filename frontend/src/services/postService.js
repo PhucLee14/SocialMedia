@@ -5,7 +5,7 @@ export const getPosts = () => {
 };
 
 export const createPost = (data) => {
-    return api.post(`/api/post/create`, { data });
+    return api.post(`/api/post/create`, data);
 };
 
 export const getPost = (id) => {

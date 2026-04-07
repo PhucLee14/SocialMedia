@@ -1,8 +1,7 @@
 import React, { useEffect, useReducer, useRef, useState } from "react";
 import { Box, Typography, Button, TextField, Switch } from "@mui/material";
 import ImageOutlinedIcon from "@mui/icons-material/ImageOutlined";
-import { storage } from "../firebase";
-import { ref, getDownloadURL, uploadBytes } from "firebase/storage";
+import { uploadImages } from "../services/uploadService";
 import { getUser } from "../services/userService";
 import { createPost } from "../services/postService";
 import LoadingDetail from "./Loading/LoadingDetail";
@@ -120,33 +119,25 @@ function CreatePostModal({ onClick }) {
     };
 
     const handleSubmit = async () => {
-        console.log(state);
         try {
             setLoading(true);
+            let uploadedMedias = [];
             if (imagesObj) {
-                for (let i = 0; i < imagesObj.length; i++) {
-                    const imageRef = ref(
-                        storage,
-                        `/images/${imagesObj[i].name}`
-                    );
-                    try {
-                        await uploadBytes(imageRef, imagesObj[i]);
-
-                        const downloadUrl = await getDownloadURL(imageRef);
-
-                        dispatch({
-                            type: "SET_MEDIAS",
-                            payload: state.medias.push(downloadUrl),
-                        });
-
-                        console.log("Upload success:", downloadUrl);
-                    } catch (error) {
-                        console.error("Upload error:", error);
-                    }
+                try {
+                    const filesArray = Array.from(imagesObj);
+                    const response = await uploadImages(filesArray);
+                    uploadedMedias = response.urls || [];
+                    console.log("Upload success:", uploadedMedias);
+                } catch (error) {
+                    console.error("Upload error:", error);
                 }
             }
-            console.log(state);
-            const data = await createPost(state);
+            const postData = {
+                ...state,
+                medias: uploadedMedias,
+            };
+            console.log("Post data:", postData);
+            const data = await createPost(postData);
             if (data.status === 400) {
                 throw new Error(data.data.error);
             }
@@ -154,7 +145,8 @@ function CreatePostModal({ onClick }) {
             setLoading(false);
             location.reload();
         } catch (error) {
-            console.log(error);
+            setLoading(false);
+            console.error("Submit error:", error);
         }
     };
 

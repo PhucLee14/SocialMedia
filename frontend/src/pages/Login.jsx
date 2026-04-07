@@ -7,6 +7,8 @@ import { useDispatch } from "react-redux";
 import { setUserInfo } from "../redux/slices/userSlice";
 import AuthButton from "../components/Button/AuthButton";
 import FacebookLogin from "react-facebook-login";
+import { useRef } from "react";
+import { Box } from "@mui/material";
 // import dotenv from "dotenv";
 // dotenv.config();
 
@@ -29,6 +31,7 @@ const initialState = {
 function Login() {
     const dispatch = useDispatch();
     const nav = useNavigate();
+    const fbLoginRef = useRef();
     const [authState, authDispatch] = useReducer(authReducer, initialState);
     const fbId = "1212736950597008";
 
@@ -96,6 +99,12 @@ function Login() {
             console.log("error: ", error);
         }
     };
+    const handleFacebookButtonClick = () => {
+        if (fbLoginRef.current) {
+            const btn = fbLoginRef.current.querySelector("button");
+            if (btn) btn.click();
+        }
+    };
 
     return (
         <div className="flex flex-col justify-center items-center h-screen">
@@ -130,8 +139,12 @@ function Login() {
                 </div>
                 <button
                     className="text-blue-500 w-full font-semibold rounded-lg cursor-pointer"
-                    onClick={handleFacebookLogin}
+                    onClick={handleFacebookButtonClick}
                 >
+                    Login with Facebook
+                </button>
+
+                <Box display="none" ref={fbLoginRef}>
                     <FacebookLogin
                         appId={fbId}
                         autoLoad={true}
@@ -139,8 +152,7 @@ function Login() {
                         onClick={handleFacebookLogin}
                         callback={handleResponseFacebookLogin}
                     />
-                    Login with Facebook
-                </button>
+                </Box>
                 <Link to="/forgotpassword" className="text-sm mt-4">
                     Forgot Password?
                 </Link>

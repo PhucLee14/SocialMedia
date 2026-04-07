@@ -16,6 +16,7 @@
     "dependencies": {
         "axios": "^1.9.0",
         "bcryptjs": "^3.0.2",
+        "cloudinary": "^1.41.3",
         "cookie-parser": "^1.4.7",
         "cors": "^2.8.5",
         "crypto": "^1.0.1",
@@ -25,6 +26,7 @@
         "jsonwebtoken": "^9.0.2",
         "mongoose": "^8.3.4",
         "multer": "^1.4.5-lts.2",
+        "multer-storage-cloudinary": "^4.0.0",
         "nodemailer": "^7.0.3",
         "passport": "^0.7.0",
         "passport-facebook": "^3.0.0",
@@ -32,6 +34,7 @@
         "socket.io": "^4.8.1"
     },
     "devDependencies": {
+        "@types/multer": "^2.1.0",
         "nodemon": "^3.1.10"
     }
 }

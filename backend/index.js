@@ -12,6 +12,7 @@ import postRoute from "./src/routes/post.route.js";
 import messageRoute from "./src/routes/message.route.js";
 import commentRoute from "./src/routes/comment.route.js";
 import mailRoute from "./src/routes/mail.route.js";
+import uploadRoute from "./src/routes/upload.route.js";
 import connectToMongoDb from "./src/config/connectToMongoDB.js";
 import initializeSocket from "./src/socket/socket.js";
 import passport from "./src/config/passport.js";
@@ -21,17 +22,17 @@ const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:3001";
 
 app.use(express.json());
 app.use(
-    cors({
-        origin: FRONTEND_URL,
-        credentials: true,
-    })
+  cors({
+    origin: FRONTEND_URL,
+    credentials: true,
+  }),
 );
 app.use(cookieParser());
 
 app.use(passport.initialize());
 
 app.get("/", (req, res) => {
-    res.send("Hello World");
+  res.send("Hello World");
 });
 
 app.use("/api/auth", authRoute);
@@ -40,12 +41,13 @@ app.use("/api/post", postRoute);
 app.use("/api/message", messageRoute);
 app.use("/api/comment", commentRoute);
 app.use("/api/mail", mailRoute);
+app.use("/api/upload", uploadRoute);
 
 const server = http.createServer(app);
 
 initializeSocket(server);
 
 server.listen(PORT, () => {
-    connectToMongoDb();
-    console.log(`Server running on port ${PORT}`);
+  connectToMongoDb();
+  console.log(`Server running on port ${PORT}`);
 });

@@ -2,7 +2,7 @@ import Post from "../models/postModel.js";
 
 const createPost = async (req, res) => {
     const { author, content, medias, tag, hideLikeAndComment, allowComment } =
-        req.body.data;
+        req.body;
     try {
         const post = new Post({
             author,

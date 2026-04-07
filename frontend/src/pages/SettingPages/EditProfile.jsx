@@ -2,8 +2,7 @@ import { Box, CircularProgress, Switch } from "@mui/material";
 import React, { useEffect, useReducer, useRef, useState } from "react";
 import { editProfile, getUserByUserName } from "../../services/userService";
 import LoadingProcess from "../../components/Loading/LoadingProcess.jsx";
-import { ref, getDownloadURL, uploadBytes } from "firebase/storage";
-import { storage } from "../../firebase.js";
+import { uploadImage } from "../../services/uploadService";
 import toast from "react-hot-toast";
 
 const accountReducer = (state, action) => {
@@ -51,20 +50,19 @@ function EditProfile() {
             url: URL.createObjectURL(selectedFile),
         });
 
-        const imageRef = ref(storage, `/images/${selectedFile.name}`);
         try {
             setUpdating(true);
-            await uploadBytes(imageRef, selectedFile);
-            const downloadUrl = await getDownloadURL(imageRef);
+            const response = await uploadImage(selectedFile);
+            const profilePicture = response.url;
             dispatch({
                 type: "SET_IMG",
-                payload: downloadUrl,
+                payload: profilePicture,
             });
             setTimeout(async () => {
                 const id = user._id;
                 const update = await editProfile(id, {
                     ...state,
-                    profilePicture: downloadUrl,
+                    profilePicture: profilePicture,
                 });
                 if (update.status === 400) {
                     throw new Error(update.data.error);
@@ -74,7 +72,7 @@ function EditProfile() {
                 setUpdating(false);
                 toast.success(update.message);
             }, 0);
-            console.log("Upload success:", downloadUrl);
+            console.log("Upload success:", profilePicture);
         } catch (error) {
             console.error("Upload error:", error);
         }
