@@ -9,4 +9,4 @@ COPY . .
 
 EXPOSE 3000
 
-CMD ["npx", "nodemon", "index.js"]
+CMD ["sh", "-c", "npm install && npx nodemon index.js"]

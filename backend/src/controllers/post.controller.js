@@ -1,8 +1,14 @@
 import Post from "../models/postModel.js";
 
 const createPost = async (req, res) => {
+    const payload = req.body?.data != null ? req.body.data : req.body;
     const { author, content, medias, tag, hideLikeAndComment, allowComment } =
-        req.body;
+        payload || {};
+    if (!author) {
+        return res.status(400).json({
+            error: "Missing author. Send JSON body or { data: { ... } }.",
+        });
+    }
     try {
         const post = new Post({
             author,
