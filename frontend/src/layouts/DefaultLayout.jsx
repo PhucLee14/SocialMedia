@@ -30,8 +30,6 @@ function DefaultLayout({ children }) {
     setUser(JSON.parse(localStorage.getItem("user")));
   }, []);
 
-  console.log("user layout: ", user);
-
   const handleLogout = async () => {
     try {
       await logout();
